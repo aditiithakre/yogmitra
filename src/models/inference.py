@@ -138,7 +138,12 @@ def compute_gravitational_posture_prior(
             live_thigh_ratio = live_thigh_dy / max(0.01, dy_torso)
             live_leg_ratio = ratio_leg
 
-            if is_calibrated:
+            # A person standing upright has vertically extended thighs (ky well below hy)
+            is_standing = (live_thigh_dy > 0.18) or (live_thigh_ratio > 0.65)
+
+            if is_standing:
+                is_seated_or_kneeling = False
+            elif is_calibrated:
                 # Calibrated Anthropometric Comparison:
                 # When seated/kneeling, 2D vertical thigh drops to < 55% of standing baseline
                 is_seated_or_kneeling = (
@@ -147,16 +152,14 @@ def compute_gravitational_posture_prior(
                     or (shin_dy < 0.045)
                     or (ay <= ky + 0.04)
                     or (abs(ky - hy) < 0.08 and abs(ay - hy) < 0.12)
-                    or (ankles_vis < 0.30 and ky >= 0.60 and hy >= 0.48)
                 )
             else:
                 # Fallback geometric check when uncalibrated
                 is_seated_or_kneeling = (
-                    (ratio_leg < 0.60)
-                    or (shin_dy < 0.045)
+                    (shin_dy < 0.045)
                     or (ay <= ky + 0.04)
                     or (abs(ky - hy) < 0.08 and abs(ay - hy) < 0.12)
-                    or (ankles_vis < 0.30 and ky >= 0.60 and hy >= 0.48)
+                    or (ratio_leg < 0.60 and ankles_vis >= 0.40)
                 )
 
             # Suppress prone and inverted poses whenever torso is upright

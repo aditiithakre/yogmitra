@@ -105,27 +105,22 @@ def draw_hud(
     frame: np.ndarray,
     prediction: PosePrediction,
     feedback_items: list[FeedbackItem],
-    voice_enabled: bool,
-    inference_interval: float,
-    last_inference_age: float,          # seconds since last inference
+    voice_enabled: bool = True,
+    inference_interval: float = 0.5,
+    last_inference_age: float = 0.0,
     show_angles: bool = False,
-    font_scale: float = 0.65,
-    max_lines: int = 4,
+    font_scale: float = 0.55,
+    max_lines: int = 3,
     target_pose: Optional[str] = None,
     landmarks: Optional[list[dict]] = None,
     alignment_score: Optional[float] = None,
     decision: Optional[object] = None,
+    jev_status: Optional[str] = None,
 ) -> np.ndarray:
-    """Draw the full HUD panel at the top of the frame.
-
-    *decision* (PoseDecision) makes the header agree with the correction engine:
-    in auto-detect mode an unconfirmed label is shown as UNCERTAIN, not DETECTED.
-    """
+    """Draw a clean, minimalist, website-ready HUD."""
     h, w = frame.shape[:2]
-    lh = 26   # line height in pixels
-    x0 = 12
 
-    # ── Check Framing / Full Body Visibility ──────────────────────────────────
+    # ── 1. Check Framing / Full Body Visibility ──────────────────────────────
     framing_warning: Optional[str] = None
     is_floor_or_seated = prediction.pose_name in (
         "Vajrasana", "Parvatasana", "Bhujangasana", "Marjariasana",
@@ -135,126 +130,85 @@ def draw_hud(
         knees_ok = (landmarks[25].get("visibility", 0) >= 0.25) or (landmarks[26].get("visibility", 0) >= 0.25)
         ankles_ok = (landmarks[27].get("visibility", 0) >= 0.25) or (landmarks[28].get("visibility", 0) >= 0.25)
         if not knees_ok and not ankles_ok and not is_floor_or_seated:
-            framing_warning = "CAMERA WARNING: Knees & feet cut off! Step 2-3 meters back"
+            framing_warning = "Step back 2-3 meters so feet and legs are visible"
         elif not ankles_ok and not is_floor_or_seated:
-            framing_warning = "CAMERA WARNING: Feet not visible! Step back so full legs are seen"
+            framing_warning = "Step back so full legs and feet are in view"
 
-    # ── Dynamic Panel Height Calculation ──────────────────────────────────────
-    has_seq = bool(
-        hasattr(prediction, "sequence_state")
-        and prediction.sequence_state
-        and prediction.sequence_state.base_posture != "UNKNOWN"
-    )
-    extra_rows = 1  # Header
-    if has_seq:
-        extra_rows += 1
-    if prediction.top3:
-        extra_rows += 1
-    if framing_warning:
-        extra_rows += 1
-    total_rows = extra_rows + min(len(feedback_items), max_lines)
+    # ── 2. Simple & Modern Pose Header (Real-Time Auto Mode) ──────────────────
+    is_assessed = bool(decision is not None and getattr(decision, "assessment_allowed", False) and getattr(decision, "final_pose", None))
+    conf_str = f"{prediction.confidence * 100:.0f}%"
+    form_str = ""
+    if hasattr(prediction, "correctness_label") and getattr(prediction, "correctness_label"):
+        corr_lbl = getattr(prediction, "correctness_label").upper()
+        form_str = f"  |  Form: {corr_lbl}"
 
-    panel_h = max(115, total_rows * lh + 22)
-    overlay = frame.copy()
-    cv2.rectangle(overlay, (0, 0), (w, panel_h), CLR_PANEL, -1)
-    cv2.addWeighted(overlay, 0.70, frame, 0.30, 0, frame)
-
-    # ── Row 0: target / pose name + confidence + interval ─────────────────────
-    interval_str = f"  |  Interval: {inference_interval:.1f}s"
-    voice_str = "  |  Voice: ON" if voice_enabled else "  |  Voice: OFF"
-
-    # Alignment score badge
-    score_str = ""
-    if alignment_score is not None and alignment_score > 0:
-        score_str = f"  |  Score: {alignment_score:.0f}%"
-
-    if target_pose:
-        if prediction.pose_name == target_pose and prediction.status == "detected":
-            header_str = f"PRACTICE: {target_pose} [Match {prediction.confidence*100:.0f}%]"
-            status_colour = CLR_GOOD
-        else:
-            header_str = f"PRACTICE: {target_pose} (Aligning...)"
-            status_colour = CLR_WARN
+    if prediction.status == "no_person":
+        header_str = "STATUS: NO PERSON DETECTED"
+        status_colour = CLR_CORRECT
+    elif is_assessed:
+        final_pose = decision.final_pose
+        header_str = f"DETECTED: {final_pose} [{conf_str}]{form_str}"
+        if alignment_score is not None and alignment_score > 0:
+            header_str += f"  |  Score: {alignment_score:.0f}%"
+        status_colour = CLR_GOOD
+    elif prediction.status == "detected" and prediction.pose_name:
+        header_str = f"DETECTING: {prediction.pose_name} [{conf_str}] (Hold steady...)"
+        status_colour = CLR_WARN
     else:
-        pose_str = prediction.pose_name or "Detecting..."
-        conf_str = f"{prediction.confidence * 100:.0f}%"
-        form_str = ""
-        if hasattr(prediction, "correctness_label") and getattr(prediction, "correctness_label"):
-            corr_lbl = getattr(prediction, "correctness_label").upper()
-            form_str = f"  |  Form: {corr_lbl}"
-        header_str = f"DETECTED: {pose_str} [{conf_str}]{form_str}"
-        status_colour = {
-            "detected":      CLR_GOOD,
-            "low_confidence":CLR_WARN,
-            "no_person":     CLR_CORRECT,
-        }.get(prediction.status, CLR_INFO)
-        if decision is not None and prediction.status != "no_person":
-            if not getattr(decision, "assessment_allowed", True):
-                header_str = f"POSE UNCERTAIN (best guess {pose_str} {conf_str})"
-                status_colour = CLR_WARN
-            elif getattr(decision, "final_pose", None) and decision.final_pose != prediction.pose_name:
-                header_str = f"DETECTED: {decision.final_pose} [via {decision.source}]{form_str}"
+        header_str = "STATUS: UNIDENTIFIED (Hold any asana)"
+        status_colour = CLR_WARN
 
-    cv2.putText(frame, f"{header_str}{score_str}{interval_str}{voice_str}",
-                (x0, lh), cv2.FONT_HERSHEY_SIMPLEX,
-                font_scale, status_colour, 1, cv2.LINE_AA)
-
-    curr_row = 2
-
-    # ── Row 1: Sequence Progression & Active Pose Candidates ──────────────────
-    if has_seq:
-        seq = prediction.sequence_state
-        posture_lbl = seq.base_posture.replace("_", "/")
-        fd = getattr(prediction, "filter_decision", None)
-        if fd is not None and not fd.applied_sequence:
-            # Show what the candidate filter actually did, not the tracker's unused pruning list
-            if fd.skipped_reason:
-                filt = f"filter off ({fd.skipped_reason})"
-            elif fd.suppressed:
-                filt = f"down-weighted: {', '.join(fd.suppressed[:3])}" + (f" +{len(fd.suppressed) - 3}" if len(fd.suppressed) > 3 else "")
-            else:
-                filt = "no classes down-weighted"
-            seq_str = f"Base: {posture_lbl}  |  {filt}"
-        else:
-            cand_str = ", ".join(seq.active_candidates[:3])
-            if len(seq.active_candidates) > 3:
-                cand_str += f" +{len(seq.active_candidates) - 3}"
-            seq_str = f"Step {seq.step}/{seq.step_total}: {seq.step_name}  |  Base: {posture_lbl}  |  Eligible: {cand_str}"
-        cv2.putText(frame, seq_str,
-                    (x0, curr_row * lh - 2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale * 0.70, (100, 220, 255), 1, cv2.LINE_AA)
-        curr_row += 1
-
-    # ── Row 2: Top candidate predictions ──────────────────────────────────────
-    if prediction.top3:
-        top_items = [f"{name} ({prob*100:.0f}%)" for name, prob in prediction.top3[:3]]
-        top_str = "Match: " + "  |  ".join(top_items)
-        cv2.putText(frame, top_str,
-                    (x0, curr_row * lh - 2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale * 0.70, (180, 220, 180), 1, cv2.LINE_AA)
-        curr_row += 1
-
-    # ── Framing Warning Banner if user is too close ───────────────────────────
+    # ── 3. Collect Clean Coaching Cues ────────────────────────────────────────
+    lines: list[tuple[str, tuple[int, int, int]]] = []
     if framing_warning:
-        cv2.putText(frame, framing_warning,
-                    (x0, curr_row * lh - 2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale * 0.80, (0, 140, 255), 2, cv2.LINE_AA)
-        curr_row += 1
+        lines.append((framing_warning, CLR_WARN))
 
-    # ── Rows: correction messages ─────────────────────────────────────────────
-    for i, item in enumerate(feedback_items[:max_lines]):
-        colour = {
-            "correction": CLR_CORRECT,
-            "warning":    CLR_WARN,
-            "info":       CLR_GOOD,
-        }.get(item.severity, CLR_INFO)
-        cv2.putText(frame, item.instruction,
-                    (x0, (curr_row + i) * lh - 2),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    font_scale * 0.80, colour, 1, cv2.LINE_AA)
+    if is_assessed:
+        for item in feedback_items[:max_lines]:
+            col = {
+                "correction": CLR_CORRECT,
+                "warning":    CLR_WARN,
+                "info":       CLR_GOOD,
+            }.get(item.severity, CLR_INFO)
+            lines.append((item.instruction, col))
+    elif prediction.status == "detected" and prediction.pose_name:
+        lines.append((f"Hold {prediction.pose_name} steady to confirm.", CLR_WARN))
+        lines.append(("Real-time pose guidance will activate.", CLR_INFO))
+    elif prediction.status != "no_person":
+        lines.append(("Stand or hold posture clearly in view.", CLR_INFO))
+        lines.append(("Real-time pose guidance will activate.", CLR_INFO))
+
+    # ── 4. Render Floating Aesthetic Card at Top-Left ─────────────────────────
+    card_x = 16
+    card_y = 16
+    row_h = 24
+
+    # Calculate max text width for compact card
+    (hw, hh), _ = cv2.getTextSize(header_str, cv2.FONT_HERSHEY_SIMPLEX, 0.50, 1)
+    max_text_w = hw
+    for text, _ in lines:
+        (lw, _), _ = cv2.getTextSize(f"• {text}", cv2.FONT_HERSHEY_SIMPLEX, 0.44, 1)
+        if lw > max_text_w:
+            max_text_w = lw
+
+    card_w = min(max(max_text_w + 32, 240), w - 32)
+    card_h = 32 + (len(lines) * row_h) + (6 if lines else 0)
+
+    overlay_card = frame.copy()
+    cv2.rectangle(overlay_card, (card_x, card_y), (card_x + card_w, card_y + card_h), (20, 24, 30), -1)
+    cv2.rectangle(overlay_card, (card_x, card_y), (card_x + card_w, card_y + card_h), (55, 70, 85), 1)
+    cv2.addWeighted(overlay_card, 0.78, frame, 0.22, 0, frame)
+
+    # Header text
+    cv2.putText(frame, header_str, (card_x + 14, card_y + 22),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.50, status_colour, 1, cv2.LINE_AA)
+
+    # Feedback lines
+    curr_y = card_y + 22 + row_h
+    for text, col in lines:
+        cv2.putText(frame, f"• {text}", (card_x + 14, curr_y),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.44, col, 1, cv2.LINE_AA)
+        curr_y += row_h
 
     return frame
 
@@ -301,14 +255,7 @@ def draw_calibration_overlay(
 
 
 def draw_key_hints(frame: np.ndarray) -> np.ndarray:
-    """Tiny key-binding reminder at the bottom of the frame."""
-    h, w = frame.shape[:2]
-    hints = (
-        "Q=Quit  T/N=Pose  M=Guided/Free  C=Calibrate  "
-        "V=Voice  A=Angles  +/-=Interval  S=Shot  J=Jev check  D=Diagnostics"
-    )
-    cv2.putText(frame, hints, (10, h - 10),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.38, CLR_INFO, 1, cv2.LINE_AA)
+    """Hidden for a clean, minimalist website-ready HUD."""
     return frame
 
 
@@ -318,37 +265,12 @@ TIER_COLOURS = {"high": CLR_GOOD, "medium": CLR_WARN, "low": CLR_CORRECT}
 def draw_decision_status(
     frame: np.ndarray,
     decision: Optional[object],
-    landmark_tier: Optional[str],
-    correction_state: str,
+    landmark_tier: Optional[str] = None,
+    correction_state: str = "",
     jev_status: Optional[str] = None,
     y_from_bottom: int = 30,
 ) -> np.ndarray:
-    """
-    One-line status strip above the key hints:
-      Local: <pose> <conf> | Jev: <pose> <conf> (<agreement>) | Landmarks: <tier> | Correction: <state>
-    """
-    if decision is None:
-        return frame
-    h, w = frame.shape[:2]
-    local = f"Local: {decision.local_pose or '-'} {decision.local_confidence*100:.0f}%"
-    if decision.jev_pose or (jev_status and jev_status not in ("disabled",)):
-        jc = f" {decision.jev_confidence*100:.0f}%" if decision.jev_confidence is not None else ""
-        jev = f"Jev: {decision.jev_pose or '-'}{jc} ({decision.agreement})"
-        if jev_status and jev_status not in ("ok", "idle"):
-            jev += f" [{jev_status}]"
-    else:
-        jev = "Jev: off"
-    lt = (landmark_tier or "low").upper()
-    text = f"{local}  |  {jev}  |  Landmarks: {lt}  |  Correction: {correction_state}"
-    y = h - y_from_bottom
-    overlay = frame.copy()
-    cv2.rectangle(overlay, (0, y - 18), (w, y + 8), CLR_PANEL, -1)
-    cv2.addWeighted(overlay, 0.65, frame, 0.35, 0, frame)
-    colour = TIER_COLOURS.get(decision.tier if decision.assessment_allowed else "low", CLR_INFO)
-    cv2.putText(frame, text, (10, y), cv2.FONT_HERSHEY_SIMPLEX, 0.45, colour, 1, cv2.LINE_AA)
-    if not decision.assessment_allowed or decision.tier != "high":
-        cv2.putText(frame, f"Why: {decision.reason}", (10, y - 22), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.42, CLR_WARN, 1, cv2.LINE_AA)
+    """Hidden for a clean, minimalist website-ready HUD."""
     return frame
 
 

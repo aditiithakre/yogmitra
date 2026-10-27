@@ -1,11 +1,23 @@
 # Yoga Mitra: Real-Time Personalized Yoga Posture Detection and Correction
 
-YogaMitra watches you through a webcam and does three things:
-1. Recognizes the yoga pose you are in.
-2. Checks your form.
-3. Gives joint-level corrections on screen and by voice, but only when the measurements behind them are reliable.
+YogaMitra is an intelligent, real-time computer vision system that monitors yoga practice through a standard webcam, evaluates body biomechanics, and delivers instant posture corrections both visually and through voice coaching.
 
-Measured performance and its limitations are documented in **[EVALUATION.md](EVALUATION.md)**.
+---
+
+## Key Capabilities
+
+1. **Dual-Panel Visual Interface:** Left panel displays the live webcam feed with skeletal overlays, color-coded joint angle pills, and alignment HUD; right panel displays high-resolution target asana reference cards with key alignment cues.
+2. **Dual Interfaces:**
+   - **Native Desktop App:** Low-latency OpenCV window with HUD, status strip, and real-time diagnostics (`run_app.py` / `run_desktop.bat`).
+   - **Modern Web Dashboard:** Full-featured browser interface on `http://localhost:5000` with live MJPEG streaming, real-time telemetry, pose selector, and interactive controls (`server.py`).
+3. **Biomechanical Evaluation (39 Features):** Computes 10 critical joint angles, 6 normalized distances, 3 alignment angles, 3 symmetry differences, and 17 imputation flags using MediaPipe PoseLandmarker Heavy in video stream mode.
+4. **Dual-Task Zenodo Machine Learning Pipeline:**
+   - **Model A (Asana Classifier):** Classifies the current asana across 10 core yoga poses.
+   - **Model B (Form Verifier):** Binary verification checking whether the pose execution meets anatomical correctness.
+   - Also supports a 47-class Kaggle Random Forest / MLP model profile.
+5. **Multi-Tier Reliability & Temporal Smoothing:** Joint-level confidence gating (High, Medium, Low) prevents false corrections when body parts are occluded or out of frame.
+6. **Natural Voice Coaching:** Threaded SAPI5 / speech engine delivers human-like directional guidance ("Straighten your left knee", "Raise your arms") with per-joint cooldowns and posture-change queue clearing.
+7. **Session Progress Analytics:** Persists alignment scores, session durations, joint error trajectories, and recommendations in a local SQLite database (`data/yoga_sessions.db`).
 
 ---
 
@@ -13,238 +25,197 @@ Measured performance and its limitations are documented in **[EVALUATION.md](EVA
 
 ```mermaid
 graph TD
-    A[Webcam frame] --> B[MediaPipe PoseLandmarker Heavy<br/>VIDEO mode + monotonic timestamps]
-    B --> C[Landmark history<br/>last reliable observation, max age, scene-change reset]
-    C --> D[Temporal reliability tracker<br/>visibility / imputation / jitter tiers]
-    C --> E[39 biomechanical features]
-    E --> F{Profile}
-    F -->|Zenodo| G1[10-asana classifier RF/MLP + form verifier]
-    F -->|Kaggle| G2[47-class classifier RF/MLP]
-    G1 --> H[Reliability-gated candidate filters + EMA smoothing]
+    A[Webcam Frame] --> B[MediaPipe PoseLandmarker Heavy<br/>VIDEO mode + Monotonic Timestamps]
+    B --> C[Landmark History & Fallback<br/>Temporal Imputation + Scene-Change Reset]
+    C --> D[Temporal Reliability Tracker<br/>Visibility / Imputation / Jitter Tiers]
+    C --> E[39 Biomechanical Features<br/>Angles, Distances, Symmetry]
+    E --> F{Model Profile}
+    F -->|Zenodo Profile| G1[Model A: 10-Asana Classifier<br/>Model B: Binary Form Verifier]
+    F -->|Kaggle Profile| G2[47-Class Classifier RF/MLP]
+    G1 --> H[Reliability-Gated Candidate Filters + EMA Smoothing]
     G2 --> H
-    H --> J[Pose decision<br/>calibrated threshold, class gate, orientation check, guided target]
-    JEV[Optional Jev still-image assessment<br/>background worker, throttled, stale-checked] --> J
+    H --> J[Pose Decision<br/>Calibrated Threshold, Class Gate, Orientation Check]
     D --> J
-    J -->|assessment allowed| K[Posture evaluator<br/>per-joint tier = min of visibility, imputation, jitter, decision]
-    J -->|uncertain| U[Uncertain state + camera guidance]
-    K --> L[Feedback engine: high = specific, medium = qualified, low = suppressed]
+    J -->|High / Medium Reliability| K[Posture Evaluator<br/>Joint-Level Range Checks & Severity Classification]
+    J -->|Uncertain / Low Tracking| U[Uncertain State + Camera Guidance]
+    K --> L[Feedback Engine<br/>High: Specific Cue | Medium: Qualified Suggestion]
     U --> L
-    L --> M[HUD + status strip + diagnostics]
-    L --> N[Voice]
-    K --> P[Progress tracker]
+    L --> M1[Desktop OpenCV HUD & Reference Card]
+    L --> M2[Web Dashboard Telemetry & MJPEG Stream]
+    L --> N[Voice Engine<br/>Dynamic Cooldown & Queue Management]
+    K --> P[Session Progress Tracker<br/>SQLite Storage & Longitudinal Analytics]
 ```
-
-**Design guarantees**
-- **Pose-specific corrections only from reliable evidence.** In auto-detect mode a label must pass all four checks below, otherwise the screen shows *uncertain* plus camera guidance:
-  - the validation-calibrated confidence threshold;
-  - a per-class reliability gate;
-  - an orientation consistency check;
-  - a two-inference stability check.
-- **Guided mode keeps your chosen target.** Classification can only lower certainty in guided mode, never replace the target.
-- **Joint-level evidence.** A correction is never issued for an angle whose joints are hidden or expired.
-  - Estimated (carried-forward) joints are flagged and capped at "medium" reliability.
-  - Medium-reliability corrections are worded as qualified suggestions.
-- **Jev is optional.** It is an image-based second opinion on *which* asana is shown. It never supplies joint angles and never overrides a confident local prediction. The app is fully functional without it.
-- **Everything is configurable** in `config.yaml`. Settings were chosen from validation data; see EVALUATION.md §3–§5.
 
 ---
 
 ## Installation
 
-**Requirements:** Python **3.10–3.12** (tested on 3.12), a webcam, and about 1.5 GB of disk.
+### Prerequisites
+- Python **3.10 – 3.12** (tested on Python 3.12)
+- Webcam (built-in or USB)
+- ~1.5 GB disk space (for models and dataset features)
+
+### Setup
 
 ```bash
+# Clone the repository
 git clone https://github.com/anshu-0132/yogmitra && cd yogmitra
+
+# Create and activate virtual environment
 python -m venv .venv
-# Windows: .venv\Scripts\activate    macOS/Linux: source .venv/bin/activate
+
+# Windows:
+.venv\Scripts\activate
+
+# macOS / Linux:
+source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
-# optional — only for the Kaggle 47-class *MLP* (Keras) model:
+
+# Optional — for Kaggle 47-class MLP (Keras) model:
 pip install -r requirements-optional.txt
-# Linux only, for voice output:
+
+# Linux only (for system voice output):
 sudo apt install espeak-ng
 ```
 
-- `scikit-learn` is pinned to **1.9.0** because the saved `.joblib` models were created with it.
-- On a headless Linux server, MediaPipe additionally needs `libegl1 libgles2` (`apt install libegl1 libgles2`).
+---
 
-### Required artifacts (already in the repository)
+## Running the Application
 
-| File / folder | Purpose |
-|---|---|
-| `pose_landmarker_heavy (1).task` | MediaPipe PoseLandmarker Heavy model |
-| `saved_yoga_model_zenodo/rf/`, `saved_yoga_model_zenodo/mlp/` | Zenodo 10-asana classifier + form verifier, per architecture. The un-suffixed folder is a copy of the MLP "champion"; the app loads `<dir>/<active_classifier>/`. |
-| `saved_yoga_model/` | Kaggle 47-class RF (`.joblib`) and MLP (`.keras`) |
-| `data/zenodo/*.csv`, `zenodo_yoga_landmarks - ….csv` | Zenodo features / landmarks used by the evaluation scripts |
-| `data/zenodo/confidence_calibration.json` | Thresholds and per-class reliability, calibrated on the validation split |
-| `assets/pose_references/` | Reference images for the right-hand panel |
+### Option A: Desktop Application
+Run directly using Python or the launcher script:
 
-All paths in `config.yaml` are resolved relative to the project root, so you can launch from any directory.
+```bash
+# Launch default configuration (Zenodo profile, Random Forest, auto-detect)
+python run_app.py
+
+# Or on Windows, double-click run_desktop.bat
+run_desktop.bat
+```
+
+#### Common Desktop Options:
+```bash
+python run_app.py --target-pose "Tadasana"           # Guided practice on a specific pose
+python run_app.py --free                             # Free practice (auto-detect)
+python run_app.py --profile kaggle                   # Use the 47-class Kaggle model profile
+python run_app.py --classifier mlp                   # Use MLP instead of Random Forest
+python run_app.py --diagnostics                      # Enable live diagnostic overlay
+python run_app.py --no-voice                         # Run with visual feedback only
+python run_app.py --camera 1                         # Use secondary external webcam
+python run_app.py --calibrate                        # Run 5-second body calibration on start
+python run_app.py --history                          # Display session history and past scores
+python run_app.py --test-voice                       # Verify text-to-speech audio output
+```
+
+### Option B: Interactive Web Dashboard
+YogaMitra includes a standalone Flask web server providing a browser-based dashboard:
+
+```bash
+python server.py
+```
+Open your browser and navigate to:
+```
+http://localhost:5000
+```
+
+**Web Dashboard Features:**
+- Live video stream with skeletal landmarks, angle badges, and target pose card
+- Real-time biomechanical telemetry showing joint angles and deviation indicators
+- Form verification status (Model B verification)
+- Interactive pose selector for switching between Free Mode and Guided Asanas
+- Audio toggle and session summary stats
 
 ---
 
-## Running
-
-```bash
-python run_app.py                                    # profile/classifier from config.yaml (Zenodo, RF, auto-detect)
-python run_app.py --target-pose "Tadasana"           # guided practice
-python run_app.py --free                             # auto-detect
-python run_app.py --profile kaggle                   # 47-class Kaggle model
-python run_app.py --classifier mlp                   # MLP instead of RF
-python run_app.py --diagnostics                      # live diagnostic panel
-python run_app.py --no-voice --camera 1
-python run_app.py --calibrate                        # 5-second body calibration on start
-python run_app.py --progress | --history | --test-voice
-```
-
-**Replaying a recorded video** works without a webcam, for demos and automated checks:
-
-```bash
-python run_app.py --video practice.mp4 --headless --no-voice --log-decisions decisions.jsonl
-```
-
-`decisions.jsonl` gets one line per inference. Each line records:
-- the local prediction and its top 3;
-- the landmark tier and the filter decision;
-- the final decision and the reason for it;
-- the corrections issued or suppressed, with the feedback text;
-- latencies.
-
-Use it to review false-correction rates on your own recordings.
-
-### Keyboard controls
+## Keyboard Controls (Desktop App)
 
 | Key | Action |
 |:---:|:---|
-| `T` / `N` | Cycle guided target pose |
-| `M` | Toggle guided / auto-detect |
-| `C` | Start or cancel calibration |
-| `J` | Ask Jev to assess the current frame (only when Jev is enabled) |
-| `D` | Toggle the diagnostics panel |
-| `V` | Voice on/off |
-| `A` | Joint-angle labels on/off |
-| `+` / `-` | Inference interval |
-| `R` | Reset prediction, landmark and reliability history |
-| `S` | Screenshot to `screenshots/` |
-| `Q` / `Esc` | Quit (camera, MediaPipe, Jev worker and voice are always released) |
-
-### What the screen shows
-
-- **HUD header:** `DETECTED: <pose>` only when an assessment is allowed. Otherwise it shows `POSE UNCERTAIN (best guess …)`.
-- **Status strip** (bottom): `Local: <pose> <conf> | Jev: <pose> <conf> (<agree/disagree/…>) | Landmarks: HIGH/MEDIUM/LOW | Correction: issued / qualified / suppressed`, plus a `Why:` line whenever certainty is not high.
-- **Skeleton:**
-  - Solid dots are observed joints.
-  - Hollow orange circles are joints estimated from the last few hundred milliseconds.
-  - Expired or unseen joints are not drawn.
-- **Diagnostics** (`D`):
-  - FPS and MediaPipe / classifier latency;
-  - counts of imputed, unavailable and suspect landmarks;
-  - top-3 classes and the filter decision;
-  - the final decision, Jev request statistics, and per-joint reliability tiers.
+| `T` / `N` | Cycle through guided target poses |
+| `M` | Toggle between Guided and Auto-Detect (Free) mode |
+| `C` | Start or cancel personalized body calibration |
+| `D` | Toggle live diagnostics panel |
+| `V` | Mute / unmute voice feedback |
+| `A` | Toggle joint-angle numerical labels |
+| `+` / `-` | Increase / decrease inference frequency |
+| `R` | Reset tracking, reliability, and landmark histories |
+| `S` | Capture a screenshot to `screenshots/` |
+| `Q` / `Esc` | Safely quit and display session summary |
 
 ---
 
-## Jev setup (optional, experimental)
+## User Interface Elements
 
-Jev is TypeSafe's System One decision model ([docs.typesafe.ai](https://docs.typesafe.ai/)). YogaMitra uses its image input, `POST https://api.typesafe.ai/v1/systemone` with `model: "jev-preview"` and the `TypeSafe-Danger-Zone-Images: true` header, to ask "which of these asanas is shown?" for **selected still frames only**.
-
-1. Get an API key from the TypeSafe console ([console.typesafe.ai/keys](https://console.typesafe.ai/keys)).
-2. Put it in the environment, **never** in `config.yaml`:
-   ```bash
-   export JEVMODEL_API_KEY="..."            # Windows PowerShell: $env:JEVMODEL_API_KEY="..."
-   ```
-3. Enable Jev with `jev.enabled: true` in `config.yaml`, or pass `--jev`.
-4. Check the `jev:` block in `config.yaml`:
-   - endpoint and model;
-   - timeout and retry count;
-   - minimum request interval (default 6 s);
-   - JPEG quality and maximum image side;
-   - minimum confidence and maximum result age;
-   - automatic request after `ambiguity_inferences` uncertain inferences;
-   - manual `J` key;
-   - optional form question;
-   - the image opt-in header named in the docs.
-
-**When frames are sent:**
-- automatically, when auto-detect stays ambiguous for several inferences while tracking is good;
-- or when you press `J`.
-
-At most one request is in flight, and requests are throttled. An answer is discarded if the person moved, the scene changed, or the answer is older than `max_result_age_seconds`.
-
-**Privacy:**
-- Frames are sent to an external service only when Jev is enabled. The app prints a notice at start.
-- Frames are not saved to disk.
-- The key is never logged or displayed.
-
-**Without a key** (or with `--no-jev`), the app runs fully local.
-
-**Status:**
-- The client is tested against mocked responses only.
-- It has **not** been verified against the live API from the development environment.
-- Run `python scripts/evaluate_jev_images.py --images-dir <labelled photos> --jev` before relying on Jev results.
+- **Header HUD:** Displays detected asana, confidence percentage, and form verification badge when confidence passes validation gates. Displays helpful guidance when pose is uncertain.
+- **Side-by-Side Target Reference:** Shows an illustrated reference card, key anatomical focus points, and alignment cues for the selected pose.
+- **Skeleton Visualization:**
+  - Solid color-coded lines and joint circles indicate actively tracked landmarks.
+  - Orange hollow markers denote short-term temporally estimated joints.
+  - Red / amber highlights pinpoint misaligned joints requiring correction.
+- **Angle Pills:** Real-time numerical degree readouts positioned next to evaluated joints.
+- **Status Strip:** Displays model prediction, tracking reliability tier (`HIGH`, `MEDIUM`, `LOW`), and current coaching feedback.
 
 ---
 
-## Tests and evaluation
+## Supported Asanas
 
-```bash
-python -m pytest tests/ -q          # 128 tests, no webcam, no network, no API key needed
+### Zenodo 10-Asana Dataset:
+1. **Tadasana** (Mountain Pose)
+2. **Kati Chakrasana** (Standing Spinal Twist)
+3. **Ardhakati Chakrasana** (Lateral Side Bend)
+4. **Vajrasana** (Thunderbolt Pose)
+5. **Parvatasana** (Seated Mountain Pose)
+6. **Bhujangasana** (Cobra Pose)
+7. **Marjariasana** (Cat-Cow Pose)
+8. **Sarvangasana** (Shoulder Stand)
+9. **Viparita Karani** (Legs-Up-the-Wall Pose)
+10. **Anantasana** (Side-Reclining Leg Lift)
+
+### Kaggle Profile Reference Poses:
+Virabhadrasana I & II (Warrior I & II), Utkatasana (Chair Pose), Trikonasana (Triangle Pose), Phalakasana (Plank), Adho Mukha Svanasana (Downward-Facing Dog), and Vrksasana (Tree Pose).
+
+---
+
+## Project Structure
+
 ```
-
-| Test file | Covers |
-|---|---|
-| `tests/test_pipeline.py`, `tests/test_zenodo_pipeline.py` | Original suites |
-| `tests/test_landmark_tracking.py` | Video timestamps, landmark history (one-frame / persistent occlusion, recovery, expiry, resets, visibility-decay ghosts) |
-| `tests/test_reliability_fixes.py` | Confidence gating, filter behaviour and orientation transitions, guided-target preservation, tiered corrections, artifact / schema compatibility, cwd independence |
-| `tests/test_jev_integration.py` | Request schema, parsing, failures / timeouts, retries, throttling, stale answers, fusion policy (all HTTP mocked) |
-
-Evaluation scripts (see EVALUATION.md for results):
-
-```bash
-python scripts/evaluate_zenodo_models.py       # bare RF/MLP metrics on the held-out test split
-python scripts/evaluate_runtime_pipeline.py    # filter ablation, smoothing, transitions, missing-landmark study
-python scripts/calibrate_confidence.py         # thresholds & filter policy chosen on val, confirmed on test
-python scripts/evaluate_system.py              # Kaggle 47-class
-python scripts/test_step_by_step_system.py     # per-step accuracy on held-out sessions
-python scripts/benchmark_mediapipe_modes.py --video clip.mp4 --still person.jpg
-python scripts/evaluate_jev_images.py --images-dir labelled/ [--jev]
+yogmitra/
+├── assets/
+│   └── pose_references/        # Target asana reference cards & diagrams
+├── config.yaml                 # Central application & pipeline configuration
+├── data/
+│   ├── yoga_sessions.db        # SQLite session history and performance logs
+│   └── zenodo/                 # Dataset features, splits, and calibration data
+├── run_app.py                  # Main desktop OpenCV application entrypoint
+├── run_desktop.bat             # Windows one-click desktop launcher
+├── server.py                   # Flask web server & browser dashboard
+├── saved_yoga_model/           # Kaggle model artifacts (RF joblib & MLP keras)
+├── saved_yoga_model_zenodo/    # Zenodo dual-task models (Classifier + Form Verifier)
+├── scripts/                    # Training, evaluation, and calibration utilities
+├── src/
+│   ├── app/                    # UI overlay, reference card display, voice engine, webcam loop
+│   ├── correction/             # Biomechanical ranges, posture evaluator, feedback, calibration
+│   ├── features/               # 39-feature biomechanical extraction engine
+│   ├── models/                 # Model loader, inference engine, sequence tracker
+│   └── pose/                   # MediaPipe wrapper & missing landmark interpolation
+└── tests/                      # Automated unit and integration test suite
 ```
 
 ---
 
-## Manual webcam verification checklist
+## Testing & Verification
 
-Run `python run_app.py --diagnostics` with good lighting, the full body in view, and 2–3 m from the camera.
-
-1. **Tracking:** stand still. The skeleton is steady, and diagnostics show `MediaPipe (video)` with FPS ≥ 10.
-2. **Occlusion:** briefly hide one leg behind a chair (under 0.3 s).
-   - Hollow markers should appear.
-   - With longer occlusion the joint disappears, its angle checks become "unavailable", and no correction is given for it.
-3. **Person leaves frame:** the screen shows "No person detected". When you come back, there are no stale corrections.
-4. **Auto-detect, Tadasana:** expect `DETECTED: Tadasana` within about 1 s, with tier HIGH or MEDIUM. Bend one knee: a knee correction is issued and spoken after it persists.
-5. **Auto-detect, an unsupported pose** (e.g. Warrior II): expect `POSE UNCERTAIN`, `Correction: suppressed`, and no joint corrections.
-6. **Auto-detect, Sarvangasana / Vajrasana / Viparita Karani:** expect *uncertain*, a known model limitation. Switch to guided mode for these.
-7. **Guided mode** (`T` to choose, `M` to toggle): the target stays fixed whatever pose the classifier sees. Corrections refer to the target.
-8. **Poor camera:** step half out of the frame or dim the lights. Expect `Landmarks: LOW`, camera guidance, and no specific corrections.
-9. **Jev**, if you have a key (`--jev`):
-   - Hold an ambiguous pose. After about 1.5 s the diagnostics show `Jev: req=1`.
-   - The status strip shows agree / disagree.
-   - Press `J` repeatedly: one request at a time, and the app never freezes.
-   - Unplug the network: the app continues local-only and the status shows `network_error` or `timeout`.
-10. **Exit with `Q`:** the session summary prints and the camera light turns off.
-
----
-
-## Supported asanas
-
-- **Zenodo (10):** Tadasana, Kati Chakrasana, Ardhakati Chakrasana, Vajrasana, Parvatasana, Bhujangasana, Marjariasana, Sarvangasana, Viparita Karani, Anantasana.
-- **Kaggle (47 classes):** guided reference poses are Virabhadrasana One and Two, Utkatasana, Trikonasana, Phalakasana, Adho Mukha Svanasana, and Vrksasana.
-
-## Zenodo data and model pipeline
+Run the automated test suite with pytest:
 
 ```bash
-python scripts/prepare_zenodo_dataset.py                                     # features + group-aware splits
-python scripts/train_zenodo_models.py --dry-run                              # validation only
-python scripts/train_zenodo_models.py --execute-training-approved --model-type both --out-dir saved_yoga_model_zenodo_candidates/v2
+python -m pytest tests/ -q
 ```
 
-Train into a **new** directory and compare against the originals with `evaluate_zenodo_models.py --model-dir <dir>` before switching. Never overwrite the shipped artifacts.
+The test suite covers:
+- Core feature extraction and geometrical invariants
+- Zenodo dual-task pipeline and model loading
+- Video timestamp continuity and occlusion recovery
+- Confidence calibration and reliability gating policies
+- Posture evaluator severity calculations and angle range limits

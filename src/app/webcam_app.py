@@ -444,17 +444,9 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
         decision_log_path = (cfg.get("logging", {}) or {}).get("decision_log")
         decision_log = open(project_path(decision_log_path), "w", encoding="utf-8") if decision_log_path else None
 
-        # ── Practice / Target Mode ────────────────────────────────────────────
-        from src.app.reference_display import get_target_poses_for_profile
-        practice_cfg = cfg.get("practice", {})
-        target_mode: bool = practice_cfg.get("enabled", False)
-
-        practice_poses = get_target_poses_for_profile(active_profile)
-        default_pose = practice_poses[0] if practice_poses else "Tadasana"
-        initial_pose: str = practice_cfg.get("target_pose", default_pose)
-        if initial_pose not in practice_poses:
-            initial_pose = default_pose
-        target_idx: int = practice_poses.index(initial_pose)
+        # ── Real-Time Single Mode ─────────────────────────────────────────────
+        target_mode: bool = False
+        active_target: Optional[str] = None
 
         # ── Jev (optional, external) ──────────────────────────────────────────
         jev_cfg = cfg.get("jev", {}) or {}
@@ -494,11 +486,15 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
         screenshot_dir = _ROOT / "screenshots"
         screenshot_dir.mkdir(parents=True, exist_ok=True)
 
-        mode_label = f"Guided Practice [{practice_poses[target_idx]}]" if target_mode else "Pure Auto-Detect (Dynamic Frame Matching)"
-        print(f"[App] Starting in {mode_label}.")
-        print("[App] Controls: Q=Quit, M=Toggle Auto-Detect/Guided, C=Calibrate, V=Voice, A=Angles, "
-              "J=Jev check, D=Diagnostics")
-        print("[App] Starting main loop…")
+        print("[App] Real-Time Pose Detection & Form Feedback Active.")
+        print("[App] Controls: Q=Quit, C=Calibrate, V=Voice, A=Angles, D=Diagnostics, S=Screenshot")
+        win_title = "Yoga Mitra: AI-Powered Yoga Posture Detection & Correction"
+        if not headless:
+            cv2.namedWindow(win_title, cv2.WINDOW_AUTOSIZE)
+            try:
+                cv2.setWindowProperty(win_title, cv2.WND_PROP_TOPMOST, 1)
+            except Exception:
+                pass
 
         # ── Main loop ─────────────────────────────────────────────────────────
         while True:
@@ -516,8 +512,8 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
             now = clock_origin + cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0 if from_file else time.monotonic()
             fps_hist = (fps_hist + [now])[-30:]
             run_inference = (now - last_inference_time) >= interval
-            active_target = practice_poses[target_idx] if target_mode else None
-            mode = "guided" if target_mode else "auto"
+            active_target = None
+            mode = "realtime"
             ts_ms = int((now - clock_origin) * 1000.0)
 
             # ── Landmark detection (unmirrored frame, video timestamps) ────────
@@ -769,6 +765,7 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
                     alignment_score=(jev_form_score if jev_primary
                                      else last_eval_result.alignment_score if last_eval_result else None),
                     decision=last_decision,
+                    jev_status=(jev.status if jev.enabled else "off"),
                 )
 
             if display_cfg.get("show_decision_status", True) and last_decision is not None:
@@ -798,11 +795,6 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
                                  f"{'skip: ' + fd.skipped_reason if fd.skipped_reason else 'suppr: ' + ','.join(s[:6] for s in fd.suppressed)}")
                 if last_decision is not None:
                     lines.append(f"Decision: {last_decision.final_pose or '-'} [{last_decision.tier}/{last_decision.source}]")
-                if jev.enabled and jev_cfg.get("show_diagnostics", True):
-                    st = jev.worker.stats
-                    lat = f"{st.mean_latency_ms:.0f}" if st.mean_latency_ms else "-"
-                    lines.append(f"Jev: req={jev.requests} done={st.completed} fail={st.failures} "
-                                 f"stale={jev.discarded_stale} lat={lat}ms")
                 tiers = {k: v.tier for k, v in last_rel.joint_assessments.items()} if (last_rel and last_lm_effective) else {}
                 draw_diagnostics(frame_display, lines, tiers)
 
@@ -813,15 +805,18 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
 
             draw_key_hints(frame_display)
 
-            # ── Render Right Reference Asana Panel ────────────────────────────
-            if target_mode:
-                current_ref_pose = practice_poses[target_idx]
-            else:
-                assessed = last_decision is not None and last_decision.assessment_allowed
-                current_ref_pose = ref_display.update_auto_detected_pose(
-                    last_decision.final_pose if assessed else None,
-                    hud_prediction.confidence if (hud_prediction and assessed) else 0.0,
-                )
+            # ── Render Right Reference Asana Panel (Dynamic Real-Time Reference) ────
+            assessed = last_decision is not None and last_decision.assessment_allowed
+            candidate_pose = last_decision.final_pose if assessed else (
+                last_prediction.pose_name if (last_prediction and last_prediction.status == "detected") else None
+            )
+            candidate_conf = hud_prediction.confidence if hud_prediction else (
+                last_prediction.confidence if last_prediction else 0.0
+            )
+            current_ref_pose = ref_display.update_auto_detected_pose(
+                candidate_pose,
+                candidate_conf,
+            )
 
             primary_joint = (
                 last_eval_result.primary_check.joint_name
@@ -833,7 +828,7 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
                 pose_name=current_ref_pose,
                 height=frame_display.shape[0],
                 focus_joint=primary_joint,
-                is_guided=target_mode,
+                is_guided=False,
                 confidence=hud_prediction.confidence if hud_prediction else None,
             )
 
@@ -844,27 +839,20 @@ def run(config_input: str | Path | dict = "config.yaml") -> None:
                 break
             if headless:
                 continue
-            cv2.imshow("Yoga Mitra: AI-Powered Yoga Posture Detection & Correction", combined_display)
+            if not headless and frame_id == 20:
+                try:
+                    cv2.setWindowProperty(win_title, cv2.WND_PROP_TOPMOST, 0)
+                except Exception:
+                    pass
+            cv2.imshow(win_title, combined_display)
 
             # ── Key controls ──────────────────────────────────────────────────
             key = cv2.waitKey(1) & 0xFF
 
             if key == ord("q") or key == 27:                # Q / Esc → quit
                 break
-            elif key == ord("t") or key == ord("n"):         # T / N → cycle target pose
-                target_idx = (target_idx + 1) % len(practice_poses)
-                target_mode = True
-                feedback_engine.clear()
-                ref_display.reset_stability()
-                jev.new_epoch()
-                print(f"[App] Target pose changed to: {practice_poses[target_idx]}")
-            elif key == ord("m"):                            # M → toggle Guided vs Free mode
-                target_mode = not target_mode
-                feedback_engine.clear()
-                ref_display.reset_stability()
-                jev.new_epoch()
-                curr_mode = f"Guided [{practice_poses[target_idx]}]" if target_mode else "Free Auto-Detect"
-                print(f"[App] Mode switched to: {curr_mode}")
+            elif key == ord("m") or key == ord("t") or key == ord("n"):
+                print("[App] Real-Time Auto-Detect & Form Feedback is active.")
             elif key == ord("c"):                            # C → start/cancel calibration
                 if not calib_session.is_active:
                     calib_session.start()

@@ -73,7 +73,7 @@ class ReferenceDisplay:
         self,
         predicted_pose: Optional[str],
         confidence: float,
-        min_confidence: float = 0.30,
+        min_confidence: float = 0.25,
     ) -> Optional[str]:
         """
         Smooths auto-detected pose predictions to prevent image flickering.
@@ -110,7 +110,7 @@ class ReferenceDisplay:
         if not file_path.exists():
             return None
 
-        img = cv2.imread(str(file_path))
+        img = cv2.imread(str(file_path), cv2.IMREAD_UNCHANGED)
         if img is None:
             logger.warning("[ReferenceDisplay] Failed to read asset: %s", file_path)
             return None
@@ -152,20 +152,26 @@ class ReferenceDisplay:
 
         # ── 1. Top Section: Mode Badge & Title ─────────────────────────────────
         badge_y = 28
-        mode_text = "GUIDED TARGET ASANA" if is_guided else "DETECTED REFERENCE"
-        badge_color = CLR_ACCENT if is_guided else CLR_SUBTITLE
+        if not pose_name:
+            mode_text = "READY — STANDING BY"
+            badge_color = CLR_SUBTITLE
+            english_name = "Waiting for Pose..."
+            sanskrit_name = "Step into view & perform any asana"
+        else:
+            mode_text = "REAL-TIME REFERENCE"
+            badge_color = CLR_ACCENT
+            english_name = meta["english_name"] if meta else pose_name
+            sanskrit_name = meta["sanskrit_name"] if meta else pose_name
+
         cv2.putText(panel, mode_text, (20, badge_y),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.45, badge_color, 1, cv2.LINE_AA)
 
-        if confidence is not None and not is_guided and pose_name:
-            conf_str = f"Conf: {confidence*100:.0f}%"
+        if confidence is not None and pose_name:
+            conf_str = f"Match: {confidence*100:.0f}%"
             cv2.putText(panel, conf_str, (w - 110, badge_y),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.42, CLR_MUTED, 1, cv2.LINE_AA)
 
         title_y = badge_y + 30
-        english_name = meta["english_name"] if meta else (pose_name or "Pose Reference")
-        sanskrit_name = meta["sanskrit_name"] if meta else (pose_name or "Select or perform pose")
-
         cv2.putText(panel, english_name, (20, title_y),
                     cv2.FONT_HERSHEY_DUPLEX, 0.72, CLR_TITLE, 1, cv2.LINE_AA)
         cv2.putText(panel, sanskrit_name, (20, title_y + 22),
@@ -191,14 +197,21 @@ class ReferenceDisplay:
                 ah, aw = asset_img.shape[:2]
                 ox = card_rect[0] + (card_rect[2] - aw) // 2
                 oy = card_rect[1] + (card_rect[3] - ah) // 2
-                panel[oy:oy+ah, ox:ox+aw] = asset_img
+                if asset_img.ndim == 3 and asset_img.shape[2] == 4:
+                    alpha = asset_img[:, :, 3].astype(float) / 255.0
+                    for c in range(3):
+                        panel[oy:oy+ah, ox:ox+aw, c] = (
+                            alpha * asset_img[:, :, c] + (1.0 - alpha) * panel[oy:oy+ah, ox:ox+aw, c]
+                        ).astype(np.uint8)
+                else:
+                    panel[oy:oy+ah, ox:ox+aw] = asset_img[:, :, :3]
                 asset_drawn = True
 
         if not asset_drawn:
             # Fallback placeholder
-            msg1 = "No reference illustration"
-            msg2 = "available for this posture."
-            msg3 = "Follow standard alignment."
+            msg1 = "Perform any yoga asana"
+            msg2 = "in view of the camera."
+            msg3 = "Real-time AI will detect & guide."
             cv2.putText(panel, msg1, (card_rect[0] + 30, card_rect[1] + 110),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.48, CLR_MUTED, 1, cv2.LINE_AA)
             cv2.putText(panel, msg2, (card_rect[0] + 30, card_rect[1] + 135),
@@ -249,12 +262,6 @@ class ReferenceDisplay:
                 cv2.putText(panel, line2.strip(), (36, cues_top),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.44, CLR_CUE_TEXT, 1, cv2.LINE_AA)
                 cues_top += 18
-
-        # ── 5. Bottom Shortcut Navigation Hint ─────────────────────────────────
-        bottom_y = height - 16
-        nav_hint = "[T/N] Change Pose   [M] Toggle Mode"
-        cv2.putText(panel, nav_hint, (20, bottom_y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.40, CLR_MUTED, 1, cv2.LINE_AA)
 
         # Cache this panel
         self._cached_key = cache_key

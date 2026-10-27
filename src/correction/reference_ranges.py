@@ -448,7 +448,7 @@ POSE_METADATA: dict[str, dict] = {
     "Vajrasana": {
         "english_name": "Thunderbolt Pose",
         "sanskrit_name": "Vajrasana",
-        "asset_name": "Vajrasana.png",
+        "asset_name": "vajrasana.png",
         "cues": [
             "Kneel on mat with big toes touching and heels parted",
             "Sit buttocks comfortably in cavity between heels",

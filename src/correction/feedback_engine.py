@@ -236,7 +236,7 @@ class FeedbackEngine:
         if check.status == "unavailable" or not check.reliable:
             return check.action_hint
         if check.reliability_tier == "medium":
-            return f"Possibly: {check.action_hint[0].lower()}{check.action_hint[1:]} (tracking uncertain)"
+            return f"Possibly: {check.action_hint[0].lower()}{check.action_hint[1:]}"
         return check.action_hint
 
     def _correction_item(self, pose_name: str, check: AngleCheck) -> FeedbackItem:

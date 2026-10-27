@@ -166,7 +166,8 @@ class VoiceFeedback:
                     self._is_speaking = True
 
                 try:
-                    engine.say(item)
+                    spoken = item.replace("~", "about ").replace("°", " degrees")
+                    engine.say(spoken)
                     engine.runAndWait()
                 except Exception as exc:
                     logger.warning("[Voice] Speech error on '%s': %s", item, exc)

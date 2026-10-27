@@ -104,6 +104,7 @@ class JevConfig:
     coach_checkpoints: int = 4       # checkpoint questions per request for the focus pose (0 = no coaching)
     image_headers: dict[str, str] = field(default_factory=lambda: {"TypeSafe-Danger-Zone-Images": "true"})
     api_key_env: str = API_KEY_ENV
+    api_key: Optional[str] = None
 
     @classmethod
     def from_config(cls, cfg: Optional[dict]) -> "JevConfig":
@@ -113,6 +114,8 @@ class JevConfig:
                   "max_image_side", "request_form_assessment", "coach_checkpoints", "api_key_env"):
             if k in cfg and cfg[k] is not None:
                 setattr(out, k, type(getattr(out, k))(cfg[k]))
+        if "api_key" in cfg and cfg["api_key"] is not None:
+            out.api_key = str(cfg["api_key"])
         if isinstance(cfg.get("image_headers"), dict):
             out.image_headers = {str(k): str(v) for k, v in cfg["image_headers"].items()}
         return out
@@ -180,7 +183,7 @@ class JevClient:
 
     def __init__(self, config: Optional[JevConfig] = None, api_key: Optional[str] = None, session: Any = None):
         self.config = config or JevConfig()
-        self._api_key = api_key if api_key is not None else os.environ.get(self.config.api_key_env, "")
+        self._api_key = api_key if api_key is not None else (os.environ.get(self.config.api_key_env, "") or self.config.api_key or "")
         self._session = session
 
     def __repr__(self) -> str:  # never leak the key

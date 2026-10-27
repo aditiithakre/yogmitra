@@ -75,7 +75,8 @@ def _derive_action_hint(
     is_rear_knee: bool = False,
 ) -> tuple[str, str]:
     """
-    Returns (direction, action_hint) with human-coach natural phrasing.
+    Returns (direction, action_hint) with human-coach natural phrasing and
+    exact deviation degrees needed for optimal posture alignment.
     """
     if status == "ok":
         return "ok", f"{display_name.capitalize()} is well aligned."
@@ -83,46 +84,59 @@ def _derive_action_hint(
     if status == "unavailable":
         return "align", f"Bring your {display_name} clearly into camera view."
 
+    deg = int(round(deviation))
+    deg_str = f" by ~{deg}°" if deg > 0 else ""
+
     # Specific limb heuristics
     if is_front_knee:
         if status == "too_high":  # angle is open (> 115°), knee needs more bend
             direction = "bend"
-            if severity == "mild":
-                hint = "Bend your front knee a little more."
-            else:
-                hint = "Bend your front knee deeper toward 90 degrees."
-            return direction, hint
+            return direction, f"Bend front knee deeper{deg_str}."
         else:  # angle is acute (< 85°), knee bent too much forward
             direction = "straighten"
-            return direction, "Ease back your front knee so it stays over your ankle."
+            return direction, f"Ease back front knee{deg_str} over ankle."
 
     if is_rear_knee:
         direction = "straighten"
-        return direction, "Keep your rear knee and leg straight."
-
-    if "elbow" in angle_name or "arm" in display_name:
-        if status == "too_low":
-            return "straighten", "Extend and straighten your arms fully."
-        else:
-            return "bend", "Avoid locking your elbows completely."
+        return direction, f"Keep rear leg straight{deg_str}."
 
     if "shoulder" in angle_name:
+        side = "left" if "left" in angle_name else "right" if "right" in angle_name else ""
+        part = f"{side} shoulder".strip() if side else display_name
         if status == "too_low":
-            return "raise", "Raise your arms slightly higher."
+            return "raise", f"Raise {part}{deg_str}."
         else:
-            return "lower", "Relax your shoulders away from your ears."
+            return "lower", f"Lower {part}{deg_str}."
+
+    if "elbow" in angle_name or "arm" in display_name:
+        side = "left" if "left" in angle_name else "right" if "right" in angle_name else ""
+        part = f"{side} arm".strip() if side else display_name
+        if status == "too_low":
+            return "straighten", f"Straighten {part}{deg_str}."
+        else:
+            return "bend", f"Avoid locking {part}{deg_str}."
 
     if "hip" in angle_name:
+        side = "left" if "left" in angle_name else "right" if "right" in angle_name else ""
+        part = f"{side} hip".strip() if side else display_name
         if status == "too_low":
-            return "straighten", "Open and lengthen through your hips."
+            return "straighten", f"Open {part}{deg_str}."
         else:
-            return "bend", "Hinge comfortably at the hips."
+            return "bend", f"Hinge comfortably at {part}{deg_str}."
+
+    if "knee" in angle_name:
+        side = "left" if "left" in angle_name else "right" if "right" in angle_name else ""
+        part = f"{side} knee".strip() if side else display_name
+        if status == "too_low":
+            return "straighten", f"Straighten {part}{deg_str}."
+        else:
+            return "bend", f"Bend {part} deeper{deg_str}."
 
     # General fallback
     if status == "too_low":
-        return "straighten", f"Straighten your {display_name} slightly."
+        return "straighten", f"Straighten {display_name}{deg_str}."
     else:
-        return "bend", f"Bend your {display_name} a little more."
+        return "bend", f"Bend {display_name}{deg_str}."
 
 
 # ── Bilateral Asymmetric Lunge Adaptation ────────────────────────────────────

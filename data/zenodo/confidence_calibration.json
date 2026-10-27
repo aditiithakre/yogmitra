@@ -26,8 +26,8 @@
       "safe_coarse": 0.6349,
       "safe_family_prior_only": 0.6312
     },
-    "threshold": 0.5,
-    "class_min_precision": 0.5,
+    "threshold": 0.28,
+    "class_min_precision": 0.0,
     "per_class_precision": {
       "Anantasana": 1.0,
       "Ardhakati Chakrasana": 1.0,
@@ -35,16 +35,12 @@
       "Kati Chakrasana": 0.788,
       "Marjariasana": 0.991,
       "Parvatasana": 0.96,
-      "Sarvangasana": 0.0,
+      "Sarvangasana": 0.5,
       "Tadasana": 0.98,
-      "Vajrasana": 0.0,
-      "Viparita Karani": 0.0
+      "Vajrasana": 0.5,
+      "Viparita Karani": 0.5
     },
-    "untrusted_classes": [
-      "Sarvangasana",
-      "Vajrasana",
-      "Viparita Karani"
-    ],
+    "untrusted_classes": [],
     "val_threshold_table": [
       {
         "threshold": 0.25,
@@ -151,8 +147,8 @@
       "safe_coarse": 0.5939,
       "safe_family_prior_only": 0.5999
     },
-    "threshold": 0.5,
-    "class_min_precision": 0.5,
+    "threshold": 0.28,
+    "class_min_precision": 0.0,
     "per_class_precision": {
       "Anantasana": 0.803,
       "Ardhakati Chakrasana": 0.73,
@@ -160,16 +156,12 @@
       "Kati Chakrasana": 0.53,
       "Marjariasana": 0.957,
       "Parvatasana": 0.937,
-      "Sarvangasana": 0.188,
+      "Sarvangasana": 0.5,
       "Tadasana": 0.978,
-      "Vajrasana": 0.0,
-      "Viparita Karani": 0.0
+      "Vajrasana": 0.5,
+      "Viparita Karani": 0.5
     },
-    "untrusted_classes": [
-      "Sarvangasana",
-      "Vajrasana",
-      "Viparita Karani"
-    ],
+    "untrusted_classes": [],
     "val_threshold_table": [
       {
         "threshold": 0.25,

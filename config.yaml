@@ -132,24 +132,25 @@ voice:
 # never put it in this file.
 # Images are not saved to disk.  The local pipeline works fully without Jev.
 jev:
-  enabled: false
+  enabled: true
   endpoint: https://api.typesafe.ai/v1/systemone
   model: jev-preview              # jev-latest and jev-preview both accept images
+  api_key: ""                     # Set via JEVMODEL_API_KEY environment variable or .env
   timeout_seconds: 8.0
   max_retries: 1                  # bounded retries for 429 / 5xx / timeouts
-  min_request_interval_seconds: 6.0
-  periodic_interval_seconds: 1.0  # >0: send one frame every N s automatically (0 = only on ambiguity / J)
-  primary: true                   # Jev decides the pose and gives the corrections (local model shown for comparison)
+  min_request_interval_seconds: 1.0
+  periodic_interval_seconds: 1.0  # send one frame every 1s automatically
+  primary: true                   # Jev decides the pose and gives the corrections
   coach_checkpoints: 4            # per-pose body-part questions per request (see src/models/jev_coach.py)
-  coach_min_confidence: 0.60      # Jev checkpoint answers below this are not turned into instructions
-  high_confidence: 0.85           # Jev pose confidence at or above this is shown as HIGH certainty
+  coach_min_confidence: 0.50      # Jev checkpoint answers below this are not turned into instructions
+  high_confidence: 0.80           # Jev pose confidence at or above this is shown as HIGH certainty
   jpeg_quality: 80
   max_image_side: 1024            # Jev accepts 280–1568 px per side
-  min_confidence: 0.70            # Jev answers below this are ignored
-  max_result_age_seconds: 4.0     # older answers are discarded as stale
-  max_pose_change: 0.08           # discard answer if body moved this much (normalised) since capture
+  min_confidence: 0.50            # Jev answers below this are ignored
+  max_result_age_seconds: 10.0    # answers stay active smoothly between periodic checks
+  max_pose_change: 0.15           # discard answer only if body moved drastically
   auto_on_ambiguity: true         # request when the local model stays uncertain
-  ambiguity_inferences: 3         # ... for this many consecutive inference runs
+  ambiguity_inferences: 2         # ... for this many consecutive inference runs
   ambiguity_margin: 0.10          # top-1 vs top-2 probability margin counted as ambiguous
   manual_key: true                # press J to request an assessment of the current frame
   request_form_assessment: false  # also ask for an overall visible-form opinion (informational only)

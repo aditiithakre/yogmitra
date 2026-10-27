@@ -10,15 +10,35 @@ Usage (from the project root, or any directory):
 from __future__ import annotations
 
 import argparse
+import shutil
+import subprocess
 import sys
 from pathlib import Path
+
+# If launched under Python 3.13+ where ML dependencies (MediaPipe/sklearn) are missing,
+# automatically delegate to the installed Python 3.12 environment via Windows py launcher
+if sys.version_info >= (3, 13):
+    py_launcher = shutil.which("py")
+    if py_launcher:
+        chk = subprocess.run([py_launcher, "-3.12", "-c", "import sys; sys.exit(0)"], capture_output=True)
+        if chk.returncode == 0:
+            print("[YogMitra] Python 3.13 detected; launching seamlessly via Python 3.12 environment...")
+            sys.exit(subprocess.call([py_launcher, "-3.12", str(Path(__file__).resolve())] + sys.argv[1:]))
 
 # Ensure src/ is importable when launched from project root
 ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+import os
 import yaml
+
+env_file = ROOT / ".env"
+if env_file.exists():
+    for line in env_file.read_text().splitlines():
+        if "=" in line and not line.strip().startswith("#"):
+            k, v = line.strip().split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
 
 
 def _patch_config(cfg: dict, args: argparse.Namespace) -> dict:
@@ -34,11 +54,7 @@ def _patch_config(cfg: dict, args: argparse.Namespace) -> dict:
         cfg["camera"]["device_index"] = args.camera
     if "practice" not in cfg:
         cfg["practice"] = {}
-    if args.target_pose is not None:
-        cfg["practice"]["target_pose"] = args.target_pose
-        cfg["practice"]["enabled"] = True
-    if args.free:
-        cfg["practice"]["enabled"] = False
+    cfg["practice"]["enabled"] = False
     if getattr(args, "video", None):
         cfg["camera"]["source"] = args.video
     if getattr(args, "max_frames", None):
