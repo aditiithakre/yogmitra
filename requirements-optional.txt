@@ -1,0 +1,4 @@
+# Optional: only needed for the Kaggle 47-class MLP (saved_yoga_model/yoga_mlp.keras).
+# The Zenodo RF/MLP models and the Kaggle RF model do not need TensorFlow.
+tensorflow-cpu==2.21.0      # provides keras 3.x; model was saved with keras 3.15.1
+keras==3.15.1

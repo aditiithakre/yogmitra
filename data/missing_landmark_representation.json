@@ -1,0 +1,940 @@
+{
+  "generated": "2026-10-27 11:26:15",
+  "dataset": "Zenodo yoga landmarks (stored MediaPipe landmarks; no images)",
+  "splits": {
+    "val": {
+      "frames": 1556,
+      "sessions": 50
+    },
+    "test": {
+      "frames": 1569,
+      "sessions": 50
+    }
+  },
+  "feature_representation": "training-consistent: visibility<0.30 joints \u2192 NaN, imputed flags 0",
+  "notes": [
+    "session protocol resets inference history per held-out session; stream protocol never resets",
+    "consecutive Zenodo frames are ~1 s burst photos, not 30 fps video",
+    "thresholds/policies are chosen on 'val' and reported on 'test'",
+    "user_profile=None (uncalibrated) for all runs"
+  ],
+  "classifiers": {
+    "rf": {
+      "artifact_dir": "saved_yoga_model_zenodo/rf",
+      "model_type": "rf",
+      "val": {
+        "bare_classifier_single_frame": {
+          "accuracy": 0.7256,
+          "macro_f1": 0.615,
+          "per_class": {
+            "Anantasana": {
+              "precision": 0.983,
+              "recall": 0.518,
+              "f1": 0.678,
+              "support": 226
+            },
+            "Ardhakati Chakrasana": {
+              "precision": 0.789,
+              "recall": 0.924,
+              "f1": 0.851,
+              "support": 105
+            },
+            "Bhujangasana": {
+              "precision": 0.937,
+              "recall": 0.967,
+              "f1": 0.952,
+              "support": 122
+            },
+            "Kati Chakrasana": {
+              "precision": 0.466,
+              "recall": 0.96,
+              "f1": 0.627,
+              "support": 100
+            },
+            "Marjariasana": {
+              "precision": 0.862,
+              "recall": 0.971,
+              "f1": 0.913,
+              "support": 239
+            },
+            "Parvatasana": {
+              "precision": 0.919,
+              "recall": 0.944,
+              "f1": 0.932,
+              "support": 288
+            },
+            "Sarvangasana": {
+              "precision": 0.123,
+              "recall": 0.288,
+              "f1": 0.173,
+              "support": 59
+            },
+            "Tadasana": {
+              "precision": 0.961,
+              "recall": 0.561,
+              "f1": 0.708,
+              "support": 305
+            },
+            "Vajrasana": {
+              "precision": 0.304,
+              "recall": 0.28,
+              "f1": 0.292,
+              "support": 25
+            },
+            "Viparita Karani": {
+              "precision": 0.026,
+              "recall": 0.023,
+              "f1": 0.024,
+              "support": 87
+            }
+          },
+          "confusion_matrix": {
+            "labels": [
+              "Anantasana",
+              "Ardhakati Chakrasana",
+              "Bhujangasana",
+              "Kati Chakrasana",
+              "Marjariasana",
+              "Parvatasana",
+              "Sarvangasana",
+              "Tadasana",
+              "Vajrasana",
+              "Viparita Karani"
+            ],
+            "matrix": [
+              [
+                117,
+                1,
+                1,
+                0,
+                6,
+                1,
+                50,
+                0,
+                0,
+                50
+              ],
+              [
+                0,
+                97,
+                0,
+                4,
+                0,
+                0,
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                118,
+                0,
+                0,
+                0,
+                4,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                1,
+                0,
+                96,
+                0,
+                0,
+                0,
+                3,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                5,
+                0,
+                232,
+                0,
+                0,
+                0,
+                1,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                1,
+                272,
+                0,
+                0,
+                15,
+                0
+              ],
+              [
+                1,
+                1,
+                1,
+                0,
+                14,
+                1,
+                17,
+                0,
+                0,
+                24
+              ],
+              [
+                0,
+                22,
+                0,
+                106,
+                2,
+                4,
+                0,
+                171,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                17,
+                0,
+                0,
+                7,
+                1
+              ],
+              [
+                1,
+                1,
+                1,
+                0,
+                14,
+                1,
+                67,
+                0,
+                0,
+                2
+              ]
+            ]
+          }
+        },
+        "missing_landmark_representation": {
+          "left_leg": {
+            "observed_only": 0.4965,
+            "carry_forward": 0.6738,
+            "carry_forward_flags_zeroed": 0.6738,
+            "unoccluded_reference": 0.7518,
+            "frames": 141
+          },
+          "right_arm": {
+            "observed_only": 0.6312,
+            "carry_forward": 0.7305,
+            "carry_forward_flags_zeroed": 0.7305,
+            "unoccluded_reference": 0.7447,
+            "frames": 141
+          },
+          "both_legs": {
+            "observed_only": 0.2837,
+            "carry_forward": 0.5887,
+            "carry_forward_flags_zeroed": 0.5887,
+            "unoccluded_reference": 0.7376,
+            "frames": 141
+          }
+        }
+      },
+      "test": {
+        "bare_classifier_single_frame": {
+          "accuracy": 0.7597,
+          "macro_f1": 0.6278,
+          "per_class": {
+            "Anantasana": {
+              "precision": 0.52,
+              "recall": 0.277,
+              "f1": 0.361,
+              "support": 141
+            },
+            "Ardhakati Chakrasana": {
+              "precision": 0.903,
+              "recall": 0.816,
+              "f1": 0.857,
+              "support": 114
+            },
+            "Bhujangasana": {
+              "precision": 0.941,
+              "recall": 0.842,
+              "f1": 0.889,
+              "support": 133
+            },
+            "Kati Chakrasana": {
+              "precision": 0.935,
+              "recall": 0.828,
+              "f1": 0.878,
+              "support": 87
+            },
+            "Marjariasana": {
+              "precision": 0.92,
+              "recall": 1.0,
+              "f1": 0.958,
+              "support": 218
+            },
+            "Parvatasana": {
+              "precision": 0.92,
+              "recall": 0.962,
+              "f1": 0.94,
+              "support": 417
+            },
+            "Sarvangasana": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 74
+            },
+            "Tadasana": {
+              "precision": 0.934,
+              "recall": 0.974,
+              "f1": 0.953,
+              "support": 231
+            },
+            "Vajrasana": {
+              "precision": 0.429,
+              "recall": 0.167,
+              "f1": 0.24,
+              "support": 36
+            },
+            "Viparita Karani": {
+              "precision": 0.184,
+              "recall": 0.22,
+              "f1": 0.201,
+              "support": 118
+            }
+          },
+          "confusion_matrix": {
+            "labels": [
+              "Anantasana",
+              "Ardhakati Chakrasana",
+              "Bhujangasana",
+              "Kati Chakrasana",
+              "Marjariasana",
+              "Parvatasana",
+              "Sarvangasana",
+              "Tadasana",
+              "Vajrasana",
+              "Viparita Karani"
+            ],
+            "matrix": [
+              [
+                39,
+                0,
+                3,
+                0,
+                0,
+                0,
+                59,
+                0,
+                0,
+                40
+              ],
+              [
+                0,
+                93,
+                0,
+                5,
+                0,
+                6,
+                0,
+                10,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                112,
+                0,
+                11,
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                8,
+                0,
+                72,
+                0,
+                1,
+                0,
+                6,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                218,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                3,
+                0,
+                0,
+                0,
+                4,
+                401,
+                0,
+                0,
+                8,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                74
+              ],
+              [
+                0,
+                2,
+                0,
+                0,
+                0,
+                4,
+                0,
+                225,
+                0,
+                0
+              ],
+              [
+                3,
+                0,
+                3,
+                0,
+                0,
+                24,
+                0,
+                0,
+                6,
+                0
+              ],
+              [
+                30,
+                0,
+                1,
+                0,
+                4,
+                0,
+                57,
+                0,
+                0,
+                26
+              ]
+            ]
+          }
+        },
+        "missing_landmark_representation": {
+          "left_leg": {
+            "observed_only": 0.4296,
+            "carry_forward": 0.5407,
+            "carry_forward_flags_zeroed": 0.5407,
+            "unoccluded_reference": 0.6148,
+            "frames": 135
+          },
+          "right_arm": {
+            "observed_only": 0.5481,
+            "carry_forward": 0.5556,
+            "carry_forward_flags_zeroed": 0.5556,
+            "unoccluded_reference": 0.6444,
+            "frames": 135
+          },
+          "both_legs": {
+            "observed_only": 0.2963,
+            "carry_forward": 0.6593,
+            "carry_forward_flags_zeroed": 0.6593,
+            "unoccluded_reference": 0.6815,
+            "frames": 135
+          }
+        }
+      }
+    },
+    "mlp": {
+      "artifact_dir": "saved_yoga_model_zenodo/mlp",
+      "model_type": "mlp",
+      "val": {
+        "bare_classifier_single_frame": {
+          "accuracy": 0.7224,
+          "macro_f1": 0.6032,
+          "per_class": {
+            "Anantasana": {
+              "precision": 0.883,
+              "recall": 0.535,
+              "f1": 0.667,
+              "support": 226
+            },
+            "Ardhakati Chakrasana": {
+              "precision": 0.709,
+              "recall": 0.952,
+              "f1": 0.813,
+              "support": 105
+            },
+            "Bhujangasana": {
+              "precision": 0.829,
+              "recall": 0.877,
+              "f1": 0.853,
+              "support": 122
+            },
+            "Kati Chakrasana": {
+              "precision": 0.481,
+              "recall": 0.89,
+              "f1": 0.625,
+              "support": 100
+            },
+            "Marjariasana": {
+              "precision": 0.847,
+              "recall": 0.971,
+              "f1": 0.904,
+              "support": 239
+            },
+            "Parvatasana": {
+              "precision": 0.927,
+              "recall": 0.969,
+              "f1": 0.947,
+              "support": 288
+            },
+            "Sarvangasana": {
+              "precision": 0.045,
+              "recall": 0.085,
+              "f1": 0.059,
+              "support": 59
+            },
+            "Tadasana": {
+              "precision": 0.952,
+              "recall": 0.584,
+              "f1": 0.724,
+              "support": 305
+            },
+            "Vajrasana": {
+              "precision": 0.538,
+              "recall": 0.28,
+              "f1": 0.368,
+              "support": 25
+            },
+            "Viparita Karani": {
+              "precision": 0.076,
+              "recall": 0.069,
+              "f1": 0.072,
+              "support": 87
+            }
+          },
+          "confusion_matrix": {
+            "labels": [
+              "Anantasana",
+              "Ardhakati Chakrasana",
+              "Bhujangasana",
+              "Kati Chakrasana",
+              "Marjariasana",
+              "Parvatasana",
+              "Sarvangasana",
+              "Tadasana",
+              "Vajrasana",
+              "Viparita Karani"
+            ],
+            "matrix": [
+              [
+                121,
+                1,
+                0,
+                0,
+                4,
+                0,
+                45,
+                0,
+                0,
+                55
+              ],
+              [
+                0,
+                100,
+                0,
+                3,
+                0,
+                0,
+                0,
+                2,
+                0,
+                0
+              ],
+              [
+                0,
+                3,
+                107,
+                2,
+                0,
+                0,
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                2,
+                2,
+                89,
+                0,
+                0,
+                0,
+                7,
+                0,
+                0
+              ],
+              [
+                2,
+                0,
+                1,
+                0,
+                232,
+                1,
+                1,
+                0,
+                0,
+                2
+              ],
+              [
+                0,
+                0,
+                1,
+                0,
+                2,
+                279,
+                0,
+                0,
+                6,
+                0
+              ],
+              [
+                10,
+                0,
+                9,
+                0,
+                17,
+                2,
+                5,
+                0,
+                0,
+                16
+              ],
+              [
+                0,
+                35,
+                0,
+                90,
+                2,
+                0,
+                0,
+                178,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                1,
+                0,
+                17,
+                0,
+                0,
+                7,
+                0
+              ],
+              [
+                4,
+                0,
+                9,
+                0,
+                17,
+                2,
+                49,
+                0,
+                0,
+                6
+              ]
+            ]
+          }
+        },
+        "missing_landmark_representation": {
+          "left_leg": {
+            "observed_only": 0.4539,
+            "carry_forward": 0.6738,
+            "carry_forward_flags_zeroed": 0.6738,
+            "unoccluded_reference": 0.7305,
+            "frames": 141
+          },
+          "right_arm": {
+            "observed_only": 0.5035,
+            "carry_forward": 0.6383,
+            "carry_forward_flags_zeroed": 0.6383,
+            "unoccluded_reference": 0.7376,
+            "frames": 141
+          },
+          "both_legs": {
+            "observed_only": 0.2695,
+            "carry_forward": 0.5674,
+            "carry_forward_flags_zeroed": 0.5674,
+            "unoccluded_reference": 0.7234,
+            "frames": 141
+          }
+        }
+      },
+      "test": {
+        "bare_classifier_single_frame": {
+          "accuracy": 0.7693,
+          "macro_f1": 0.6244,
+          "per_class": {
+            "Anantasana": {
+              "precision": 0.551,
+              "recall": 0.383,
+              "f1": 0.452,
+              "support": 141
+            },
+            "Ardhakati Chakrasana": {
+              "precision": 0.893,
+              "recall": 0.877,
+              "f1": 0.885,
+              "support": 114
+            },
+            "Bhujangasana": {
+              "precision": 0.891,
+              "recall": 0.737,
+              "f1": 0.807,
+              "support": 133
+            },
+            "Kati Chakrasana": {
+              "precision": 0.795,
+              "recall": 0.805,
+              "f1": 0.8,
+              "support": 87
+            },
+            "Marjariasana": {
+              "precision": 0.865,
+              "recall": 1.0,
+              "f1": 0.928,
+              "support": 218
+            },
+            "Parvatasana": {
+              "precision": 0.91,
+              "recall": 0.969,
+              "f1": 0.938,
+              "support": 417
+            },
+            "Sarvangasana": {
+              "precision": 0.01,
+              "recall": 0.014,
+              "f1": 0.012,
+              "support": 74
+            },
+            "Tadasana": {
+              "precision": 0.935,
+              "recall": 0.931,
+              "f1": 0.933,
+              "support": 231
+            },
+            "Vajrasana": {
+              "precision": 0.333,
+              "recall": 0.083,
+              "f1": 0.133,
+              "support": 36
+            },
+            "Viparita Karani": {
+              "precision": 0.341,
+              "recall": 0.373,
+              "f1": 0.356,
+              "support": 118
+            }
+          },
+          "confusion_matrix": {
+            "labels": [
+              "Anantasana",
+              "Ardhakati Chakrasana",
+              "Bhujangasana",
+              "Kati Chakrasana",
+              "Marjariasana",
+              "Parvatasana",
+              "Sarvangasana",
+              "Tadasana",
+              "Vajrasana",
+              "Viparita Karani"
+            ],
+            "matrix": [
+              [
+                54,
+                0,
+                6,
+                1,
+                0,
+                0,
+                55,
+                0,
+                0,
+                25
+              ],
+              [
+                0,
+                100,
+                0,
+                7,
+                0,
+                3,
+                0,
+                4,
+                0,
+                0
+              ],
+              [
+                0,
+                4,
+                98,
+                1,
+                11,
+                0,
+                18,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                3,
+                0,
+                70,
+                0,
+                2,
+                1,
+                11,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                218,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                2,
+                0,
+                5,
+                404,
+                0,
+                0,
+                3,
+                2
+              ],
+              [
+                13,
+                0,
+                0,
+                0,
+                1,
+                1,
+                1,
+                0,
+                0,
+                58
+              ],
+              [
+                0,
+                5,
+                0,
+                9,
+                0,
+                2,
+                0,
+                215,
+                0,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                0,
+                2,
+                30,
+                0,
+                0,
+                3,
+                0
+              ],
+              [
+                29,
+                0,
+                4,
+                0,
+                15,
+                2,
+                22,
+                0,
+                2,
+                44
+              ]
+            ]
+          }
+        },
+        "missing_landmark_representation": {
+          "left_leg": {
+            "observed_only": 0.4889,
+            "carry_forward": 0.5778,
+            "carry_forward_flags_zeroed": 0.5778,
+            "unoccluded_reference": 0.6667,
+            "frames": 135
+          },
+          "right_arm": {
+            "observed_only": 0.5407,
+            "carry_forward": 0.5778,
+            "carry_forward_flags_zeroed": 0.5778,
+            "unoccluded_reference": 0.6889,
+            "frames": 135
+          },
+          "both_legs": {
+            "observed_only": 0.3037,
+            "carry_forward": 0.5852,
+            "carry_forward_flags_zeroed": 0.5852,
+            "unoccluded_reference": 0.6963,
+            "frames": 135
+          }
+        }
+      }
+    }
+  },
+  "runtime_seconds": 229.3
+}

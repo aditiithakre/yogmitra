@@ -1,0 +1,15 @@
+# YogaMitra runtime dependencies — versions tested together on Python 3.12 (Linux, CPU).
+# Python 3.10–3.12 recommended. scikit-learn MUST stay at 1.9.0: the saved
+# .joblib models were pickled with 1.9.0 and other versions may fail to load
+# or silently change predictions.
+mediapipe==1.1.1            # PoseLandmarker (pulls in opencv-contrib-python with GUI support)
+opencv-contrib-python==5.0.0.93
+numpy==2.5.4
+pandas==3.1.0
+scikit-learn==1.9.0
+scipy==1.18.1
+joblib==1.6.0
+PyYAML==6.0.3
+requests==2.34.2            # Jev client (only used when jev.enabled)
+pyttsx3==2.99               # voice feedback (Linux additionally needs: sudo apt install espeak-ng)
+pytest==9.1.1

@@ -1,0 +1,396 @@
+{
+  "classifier": "rf",
+  "split": "test",
+  "filter_policy": {
+    "use_gravity_prior": true,
+    "use_sequence_pruning": true,
+    "mode": "safe",
+    "prior_suppression": 0.005,
+    "sequence_suppression": 0.001,
+    "soft_floor": 0.5,
+    "min_landmark_visibility": 0.5,
+    "stable_frames": 3,
+    "override_confidence": 0.6,
+    "granularity": "coarse"
+  },
+  "grand_accuracy_pct": 71.3,
+  "frames": 585,
+  "asanas": {
+    "Tadasana": {
+      "family": "STANDING",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 85.9,
+          "dominant_prediction": "Tadasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 66.4,
+          "dominant_prediction": "Tadasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Kati Chakrasana"
+          ]
+        },
+        "step_3": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 63.9,
+          "dominant_prediction": "Tadasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        }
+      },
+      "total_tested": 75,
+      "total_correct": 75,
+      "overall_accuracy_pct": 100.0
+    },
+    "Kati Chakrasana": {
+      "family": "STANDING",
+      "steps": {
+        "step_1": {
+          "frames_tested": 17,
+          "accuracy_pct": 82.4,
+          "mean_confidence_pct": 52.1,
+          "dominant_prediction": "Kati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_3": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 56.2,
+          "dominant_prediction": "Kati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_4": {
+          "frames_tested": 4,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 68.1,
+          "dominant_prediction": "Kati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana"
+          ]
+        }
+      },
+      "total_tested": 46,
+      "total_correct": 43,
+      "overall_accuracy_pct": 93.5
+    },
+    "Ardhakati Chakrasana": {
+      "family": "STANDING",
+      "steps": {
+        "step_1": {
+          "frames_tested": 21,
+          "accuracy_pct": 85.7,
+          "mean_confidence_pct": 72.2,
+          "dominant_prediction": "Ardhakati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 17,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 69.6,
+          "dominant_prediction": "Ardhakati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana"
+          ]
+        },
+        "step_5": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 72.2,
+          "dominant_prediction": "Ardhakati Chakrasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Ardhakati Chakrasana"
+          ]
+        }
+      },
+      "total_tested": 63,
+      "total_correct": 60,
+      "overall_accuracy_pct": 95.2
+    },
+    "Vajrasana": {
+      "family": "SEATED_KNEELING",
+      "steps": {
+        "step_1": {
+          "frames_tested": 13,
+          "accuracy_pct": 0.0,
+          "mean_confidence_pct": 42.9,
+          "dominant_prediction": "Parvatasana",
+          "dominant_base": "SEATED_KNEELING",
+          "active_candidates": [
+            "Parvatasana",
+            "Vajrasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 23,
+          "accuracy_pct": 8.7,
+          "mean_confidence_pct": 53.2,
+          "dominant_prediction": "Parvatasana",
+          "dominant_base": "SEATED_KNEELING",
+          "active_candidates": [
+            "Kati Chakrasana"
+          ]
+        }
+      },
+      "total_tested": 36,
+      "total_correct": 2,
+      "overall_accuracy_pct": 5.6
+    },
+    "Parvatasana": {
+      "family": "SEATED_KNEELING",
+      "steps": {
+        "step_1": {
+          "frames_tested": 16,
+          "accuracy_pct": 68.8,
+          "mean_confidence_pct": 47.8,
+          "dominant_prediction": "Parvatasana",
+          "dominant_base": "SEATED_KNEELING",
+          "active_candidates": [
+            "Parvatasana",
+            "Vajrasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 88.0,
+          "mean_confidence_pct": 70.2,
+          "dominant_prediction": "Parvatasana",
+          "dominant_base": "SEATED_KNEELING",
+          "active_candidates": [
+            "Parvatasana",
+            "Vajrasana"
+          ]
+        },
+        "step_3": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 92.8,
+          "dominant_prediction": "Parvatasana",
+          "dominant_base": "SEATED_KNEELING",
+          "active_candidates": [
+            "Parvatasana",
+            "Vajrasana"
+          ]
+        }
+      },
+      "total_tested": 66,
+      "total_correct": 58,
+      "overall_accuracy_pct": 87.9
+    },
+    "Bhujangasana": {
+      "family": "FLOOR_PRONE_INVERTED",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 75.8,
+          "dominant_prediction": "Bhujangasana",
+          "dominant_base": "STANDING",
+          "active_candidates": [
+            "Bhujangasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 64.0,
+          "mean_confidence_pct": 45.4,
+          "dominant_prediction": "Bhujangasana",
+          "dominant_base": "INVERTED",
+          "active_candidates": [
+            "Marjariasana"
+          ]
+        }
+      },
+      "total_tested": 50,
+      "total_correct": 41,
+      "overall_accuracy_pct": 82.0
+    },
+    "Marjariasana": {
+      "family": "FLOOR_PRONE_INVERTED",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 86.6,
+          "dominant_prediction": "Marjariasana",
+          "dominant_base": "QUADRUPED",
+          "active_candidates": [
+            "Anantasana",
+            "Sarvangasana",
+            "Viparita Karani"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 86.0,
+          "dominant_prediction": "Marjariasana",
+          "dominant_base": "INVERTED",
+          "active_candidates": [
+            "Marjariasana"
+          ]
+        },
+        "step_3": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 78.0,
+          "dominant_prediction": "Marjariasana",
+          "dominant_base": "QUADRUPED",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_4": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 90.7,
+          "dominant_prediction": "Marjariasana",
+          "dominant_base": "QUADRUPED",
+          "active_candidates": [
+            "Marjariasana"
+          ]
+        }
+      },
+      "total_tested": 100,
+      "total_correct": 100,
+      "overall_accuracy_pct": 100.0
+    },
+    "Sarvangasana": {
+      "family": "FLOOR_PRONE_INVERTED",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 0.0,
+          "mean_confidence_pct": 87.9,
+          "dominant_prediction": "Viparita Karani",
+          "dominant_base": "PRONE",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 4,
+          "accuracy_pct": 0.0,
+          "mean_confidence_pct": 60.0,
+          "dominant_prediction": "Viparita Karani",
+          "dominant_base": "PRONE",
+          "active_candidates": [
+            "Bhujangasana"
+          ]
+        }
+      },
+      "total_tested": 29,
+      "total_correct": 0,
+      "overall_accuracy_pct": 0.0
+    },
+    "Viparita Karani": {
+      "family": "FLOOR_PRONE_INVERTED",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 0.0,
+          "mean_confidence_pct": 57.0,
+          "dominant_prediction": "Anantasana",
+          "dominant_base": "PRONE",
+          "active_candidates": [
+            "Bhujangasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 44.0,
+          "mean_confidence_pct": 41.6,
+          "dominant_prediction": "Sarvangasana",
+          "dominant_base": "INVERTED",
+          "active_candidates": [
+            "Anantasana",
+            "Sarvangasana",
+            "Viparita Karani"
+          ]
+        }
+      },
+      "total_tested": 50,
+      "total_correct": 11,
+      "overall_accuracy_pct": 22.0
+    },
+    "Anantasana": {
+      "family": "FLOOR_PRONE_INVERTED",
+      "steps": {
+        "step_1": {
+          "frames_tested": 25,
+          "accuracy_pct": 0.0,
+          "mean_confidence_pct": 74.5,
+          "dominant_prediction": "Sarvangasana",
+          "dominant_base": "PRONE",
+          "active_candidates": [
+            "Ardhakati Chakrasana",
+            "Kati Chakrasana",
+            "Tadasana"
+          ]
+        },
+        "step_2": {
+          "frames_tested": 25,
+          "accuracy_pct": 100.0,
+          "mean_confidence_pct": 67.4,
+          "dominant_prediction": "Anantasana",
+          "dominant_base": "INVERTED",
+          "active_candidates": [
+            "Anantasana",
+            "Sarvangasana",
+            "Viparita Karani"
+          ]
+        },
+        "step_4": {
+          "frames_tested": 20,
+          "accuracy_pct": 10.0,
+          "mean_confidence_pct": 51.1,
+          "dominant_prediction": "Viparita Karani",
+          "dominant_base": "INVERTED",
+          "active_candidates": [
+            "Anantasana",
+            "Sarvangasana",
+            "Viparita Karani"
+          ]
+        }
+      },
+      "total_tested": 70,
+      "total_correct": 27,
+      "overall_accuracy_pct": 38.6
+    }
+  }
+}

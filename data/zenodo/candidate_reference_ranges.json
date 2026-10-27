@@ -1,0 +1,772 @@
+{
+  "Anantasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 395,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 22.6,
+        "max_recommended": 172.3,
+        "median": 153.3,
+        "std": 62.2,
+        "valid_observations": 222
+      },
+      "right_elbow_angle": {
+        "min_recommended": 120.3,
+        "max_recommended": 175.3,
+        "median": 159.0,
+        "std": 33.3,
+        "valid_observations": 286
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 25.2,
+        "max_recommended": 176.4,
+        "median": 64.3,
+        "std": 65.9,
+        "valid_observations": 239
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 14.9,
+        "max_recommended": 149.7,
+        "median": 52.8,
+        "std": 47.6,
+        "valid_observations": 290
+      },
+      "left_hip_angle": {
+        "min_recommended": 61.7,
+        "max_recommended": 178.8,
+        "median": 170.7,
+        "std": 46.6,
+        "valid_observations": 385
+      },
+      "right_hip_angle": {
+        "min_recommended": 38.6,
+        "max_recommended": 176.5,
+        "median": 162.7,
+        "std": 59.8,
+        "valid_observations": 383
+      },
+      "left_knee_angle": {
+        "min_recommended": 151.6,
+        "max_recommended": 179.0,
+        "median": 176.0,
+        "std": 16.9,
+        "valid_observations": 382
+      },
+      "right_knee_angle": {
+        "min_recommended": 139.1,
+        "max_recommended": 179.1,
+        "median": 172.7,
+        "std": 18.5,
+        "valid_observations": 382
+      },
+      "left_ankle_angle": {
+        "min_recommended": 100.2,
+        "max_recommended": 173.4,
+        "median": 149.3,
+        "std": 30.8,
+        "valid_observations": 380
+      },
+      "right_ankle_angle": {
+        "min_recommended": 98.0,
+        "max_recommended": 173.0,
+        "median": 140.0,
+        "std": 29.6,
+        "valid_observations": 382
+      }
+    }
+  },
+  "Ardhakati Chakrasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 388,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 131.6,
+        "max_recommended": 178.8,
+        "median": 172.6,
+        "std": 27.3,
+        "valid_observations": 323
+      },
+      "right_elbow_angle": {
+        "min_recommended": 116.4,
+        "max_recommended": 177.7,
+        "median": 172.8,
+        "std": 30.6,
+        "valid_observations": 332
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 35.3,
+        "max_recommended": 156.4,
+        "median": 102.8,
+        "std": 44.2,
+        "valid_observations": 330
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 38.5,
+        "max_recommended": 149.0,
+        "median": 119.9,
+        "std": 40.1,
+        "valid_observations": 343
+      },
+      "left_hip_angle": {
+        "min_recommended": 98.7,
+        "max_recommended": 175.4,
+        "median": 160.1,
+        "std": 28.8,
+        "valid_observations": 376
+      },
+      "right_hip_angle": {
+        "min_recommended": 98.4,
+        "max_recommended": 173.9,
+        "median": 155.4,
+        "std": 28.9,
+        "valid_observations": 383
+      },
+      "left_knee_angle": {
+        "min_recommended": 140.5,
+        "max_recommended": 176.1,
+        "median": 162.0,
+        "std": 13.6,
+        "valid_observations": 376
+      },
+      "right_knee_angle": {
+        "min_recommended": 143.9,
+        "max_recommended": 175.0,
+        "median": 160.1,
+        "std": 12.0,
+        "valid_observations": 383
+      },
+      "left_ankle_angle": {
+        "min_recommended": 61.0,
+        "max_recommended": 155.1,
+        "median": 90.9,
+        "std": 35.7,
+        "valid_observations": 376
+      },
+      "right_ankle_angle": {
+        "min_recommended": 62.9,
+        "max_recommended": 160.1,
+        "median": 100.0,
+        "std": 34.9,
+        "valid_observations": 381
+      }
+    }
+  },
+  "Bhujangasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 500,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 46.5,
+        "max_recommended": 178.2,
+        "median": 168.4,
+        "std": 55.4,
+        "valid_observations": 247
+      },
+      "right_elbow_angle": {
+        "min_recommended": 59.0,
+        "max_recommended": 178.5,
+        "median": 169.5,
+        "std": 43.4,
+        "valid_observations": 223
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 12.8,
+        "max_recommended": 73.9,
+        "median": 22.4,
+        "std": 32.3,
+        "valid_observations": 317
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 16.1,
+        "max_recommended": 63.5,
+        "median": 25.9,
+        "std": 27.3,
+        "valid_observations": 282
+      },
+      "left_hip_angle": {
+        "min_recommended": 150.0,
+        "max_recommended": 177.4,
+        "median": 168.9,
+        "std": 31.0,
+        "valid_observations": 393
+      },
+      "right_hip_angle": {
+        "min_recommended": 153.9,
+        "max_recommended": 176.8,
+        "median": 167.7,
+        "std": 29.8,
+        "valid_observations": 404
+      },
+      "left_knee_angle": {
+        "min_recommended": 153.7,
+        "max_recommended": 175.2,
+        "median": 165.6,
+        "std": 9.9,
+        "valid_observations": 382
+      },
+      "right_knee_angle": {
+        "min_recommended": 156.0,
+        "max_recommended": 175.6,
+        "median": 166.2,
+        "std": 10.9,
+        "valid_observations": 389
+      },
+      "left_ankle_angle": {
+        "min_recommended": 81.3,
+        "max_recommended": 168.4,
+        "median": 139.6,
+        "std": 36.8,
+        "valid_observations": 360
+      },
+      "right_ankle_angle": {
+        "min_recommended": 85.0,
+        "max_recommended": 168.4,
+        "median": 139.6,
+        "std": 34.6,
+        "valid_observations": 361
+      }
+    }
+  },
+  "Kati Chakrasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 234,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 10.0,
+        "max_recommended": 178.9,
+        "median": 160.4,
+        "std": 57.4,
+        "valid_observations": 164
+      },
+      "right_elbow_angle": {
+        "min_recommended": 10.9,
+        "max_recommended": 177.7,
+        "median": 157.6,
+        "std": 57.6,
+        "valid_observations": 168
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 39.3,
+        "max_recommended": 119.5,
+        "median": 87.9,
+        "std": 32.6,
+        "valid_observations": 190
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 43.3,
+        "max_recommended": 118.6,
+        "median": 86.0,
+        "std": 30.3,
+        "valid_observations": 184
+      },
+      "left_hip_angle": {
+        "min_recommended": 132.6,
+        "max_recommended": 174.6,
+        "median": 158.3,
+        "std": 15.5,
+        "valid_observations": 226
+      },
+      "right_hip_angle": {
+        "min_recommended": 129.4,
+        "max_recommended": 176.0,
+        "median": 157.1,
+        "std": 17.1,
+        "valid_observations": 221
+      },
+      "left_knee_angle": {
+        "min_recommended": 138.7,
+        "max_recommended": 175.6,
+        "median": 161.3,
+        "std": 14.8,
+        "valid_observations": 226
+      },
+      "right_knee_angle": {
+        "min_recommended": 148.5,
+        "max_recommended": 176.5,
+        "median": 166.8,
+        "std": 11.9,
+        "valid_observations": 220
+      },
+      "left_ankle_angle": {
+        "min_recommended": 53.6,
+        "max_recommended": 135.9,
+        "median": 86.6,
+        "std": 33.1,
+        "valid_observations": 226
+      },
+      "right_ankle_angle": {
+        "min_recommended": 62.1,
+        "max_recommended": 132.7,
+        "median": 92.9,
+        "std": 30.0,
+        "valid_observations": 220
+      }
+    }
+  },
+  "Marjariasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 553,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 101.0,
+        "max_recommended": 166.9,
+        "median": 137.2,
+        "std": 24.5,
+        "valid_observations": 339
+      },
+      "right_elbow_angle": {
+        "min_recommended": 83.2,
+        "max_recommended": 175.6,
+        "median": 145.1,
+        "std": 36.0,
+        "valid_observations": 329
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 38.4,
+        "max_recommended": 127.3,
+        "median": 84.3,
+        "std": 36.4,
+        "valid_observations": 367
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 47.1,
+        "max_recommended": 134.6,
+        "median": 98.2,
+        "std": 34.4,
+        "valid_observations": 359
+      },
+      "left_hip_angle": {
+        "min_recommended": 51.9,
+        "max_recommended": 160.0,
+        "median": 122.9,
+        "std": 41.6,
+        "valid_observations": 425
+      },
+      "right_hip_angle": {
+        "min_recommended": 48.0,
+        "max_recommended": 148.1,
+        "median": 105.1,
+        "std": 39.4,
+        "valid_observations": 397
+      },
+      "left_knee_angle": {
+        "min_recommended": 48.8,
+        "max_recommended": 161.2,
+        "median": 116.0,
+        "std": 43.3,
+        "valid_observations": 399
+      },
+      "right_knee_angle": {
+        "min_recommended": 58.2,
+        "max_recommended": 149.8,
+        "median": 105.1,
+        "std": 35.5,
+        "valid_observations": 347
+      },
+      "left_ankle_angle": {
+        "min_recommended": 111.9,
+        "max_recommended": 170.1,
+        "median": 161.8,
+        "std": 34.8,
+        "valid_observations": 398
+      },
+      "right_ankle_angle": {
+        "min_recommended": 125.2,
+        "max_recommended": 173.4,
+        "median": 167.4,
+        "std": 30.2,
+        "valid_observations": 345
+      }
+    }
+  },
+  "Parvatasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 1086,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 69.2,
+        "max_recommended": 177.3,
+        "median": 156.7,
+        "std": 40.2,
+        "valid_observations": 874
+      },
+      "right_elbow_angle": {
+        "min_recommended": 75.9,
+        "max_recommended": 177.3,
+        "median": 156.2,
+        "std": 38.8,
+        "valid_observations": 848
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 43.2,
+        "max_recommended": 130.2,
+        "median": 93.7,
+        "std": 35.2,
+        "valid_observations": 953
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 44.7,
+        "max_recommended": 140.7,
+        "median": 101.9,
+        "std": 37.3,
+        "valid_observations": 916
+      },
+      "left_hip_angle": {
+        "min_recommended": 50.3,
+        "max_recommended": 161.6,
+        "median": 117.3,
+        "std": 41.5,
+        "valid_observations": 754
+      },
+      "right_hip_angle": {
+        "min_recommended": 52.9,
+        "max_recommended": 152.1,
+        "median": 109.1,
+        "std": 35.4,
+        "valid_observations": 749
+      },
+      "left_knee_angle": {
+        "min_recommended": 3.3,
+        "max_recommended": 177.3,
+        "median": 13.0,
+        "std": 75.6,
+        "valid_observations": 384
+      },
+      "right_knee_angle": {
+        "min_recommended": 4.6,
+        "max_recommended": 178.5,
+        "median": 96.4,
+        "std": 78.4,
+        "valid_observations": 223
+      },
+      "left_ankle_angle": {
+        "min_recommended": 44.1,
+        "max_recommended": 177.3,
+        "median": 159.4,
+        "std": 51.0,
+        "valid_observations": 351
+      },
+      "right_ankle_angle": {
+        "min_recommended": 21.6,
+        "max_recommended": 169.6,
+        "median": 136.1,
+        "std": 60.9,
+        "valid_observations": 221
+      }
+    }
+  },
+  "Sarvangasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 285,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 10.4,
+        "max_recommended": 167.0,
+        "median": 156.5,
+        "std": 61.9,
+        "valid_observations": 143
+      },
+      "right_elbow_angle": {
+        "min_recommended": 34.8,
+        "max_recommended": 174.9,
+        "median": 157.5,
+        "std": 54.9,
+        "valid_observations": 154
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 25.3,
+        "max_recommended": 146.6,
+        "median": 37.1,
+        "std": 45.7,
+        "valid_observations": 169
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 9.7,
+        "max_recommended": 125.4,
+        "median": 35.8,
+        "std": 43.0,
+        "valid_observations": 171
+      },
+      "left_hip_angle": {
+        "min_recommended": 80.8,
+        "max_recommended": 178.8,
+        "median": 169.2,
+        "std": 41.9,
+        "valid_observations": 276
+      },
+      "right_hip_angle": {
+        "min_recommended": 71.3,
+        "max_recommended": 177.1,
+        "median": 167.6,
+        "std": 43.3,
+        "valid_observations": 273
+      },
+      "left_knee_angle": {
+        "min_recommended": 129.7,
+        "max_recommended": 178.9,
+        "median": 173.0,
+        "std": 22.6,
+        "valid_observations": 269
+      },
+      "right_knee_angle": {
+        "min_recommended": 144.0,
+        "max_recommended": 179.2,
+        "median": 172.9,
+        "std": 17.4,
+        "valid_observations": 269
+      },
+      "left_ankle_angle": {
+        "min_recommended": 120.0,
+        "max_recommended": 169.7,
+        "median": 143.1,
+        "std": 20.8,
+        "valid_observations": 268
+      },
+      "right_ankle_angle": {
+        "min_recommended": 124.0,
+        "max_recommended": 170.4,
+        "median": 143.4,
+        "std": 18.2,
+        "valid_observations": 269
+      }
+    }
+  },
+  "Tadasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 560,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 114.4,
+        "max_recommended": 176.9,
+        "median": 147.9,
+        "std": 30.8,
+        "valid_observations": 402
+      },
+      "right_elbow_angle": {
+        "min_recommended": 93.9,
+        "max_recommended": 176.5,
+        "median": 147.7,
+        "std": 34.6,
+        "valid_observations": 428
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 34.5,
+        "max_recommended": 141.1,
+        "median": 65.4,
+        "std": 39.7,
+        "valid_observations": 443
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 33.3,
+        "max_recommended": 134.0,
+        "median": 67.5,
+        "std": 38.2,
+        "valid_observations": 447
+      },
+      "left_hip_angle": {
+        "min_recommended": 145.0,
+        "max_recommended": 175.3,
+        "median": 163.8,
+        "std": 12.0,
+        "valid_observations": 505
+      },
+      "right_hip_angle": {
+        "min_recommended": 143.9,
+        "max_recommended": 176.0,
+        "median": 158.3,
+        "std": 13.1,
+        "valid_observations": 529
+      },
+      "left_knee_angle": {
+        "min_recommended": 134.5,
+        "max_recommended": 176.7,
+        "median": 160.3,
+        "std": 15.3,
+        "valid_observations": 497
+      },
+      "right_knee_angle": {
+        "min_recommended": 140.8,
+        "max_recommended": 176.7,
+        "median": 157.2,
+        "std": 15.4,
+        "valid_observations": 518
+      },
+      "left_ankle_angle": {
+        "min_recommended": 55.1,
+        "max_recommended": 156.9,
+        "median": 77.8,
+        "std": 38.4,
+        "valid_observations": 491
+      },
+      "right_ankle_angle": {
+        "min_recommended": 53.7,
+        "max_recommended": 144.4,
+        "median": 89.5,
+        "std": 35.2,
+        "valid_observations": 506
+      }
+    }
+  },
+  "Vajrasana": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 40,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 56.2,
+        "max_recommended": 140.1,
+        "median": 99.7,
+        "std": 37.6,
+        "valid_observations": 30
+      },
+      "right_elbow_angle": {
+        "min_recommended": 55.3,
+        "max_recommended": 170.8,
+        "median": 104.0,
+        "std": 46.8,
+        "valid_observations": 28
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 28.2,
+        "max_recommended": 94.5,
+        "median": 77.5,
+        "std": 25.4,
+        "valid_observations": 36
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 30.7,
+        "max_recommended": 92.1,
+        "median": 75.5,
+        "std": 26.0,
+        "valid_observations": 33
+      },
+      "left_hip_angle": {
+        "min_recommended": 42.3,
+        "max_recommended": 153.9,
+        "median": 117.4,
+        "std": 42.9,
+        "valid_observations": 37
+      },
+      "right_hip_angle": {
+        "min_recommended": 79.0,
+        "max_recommended": 169.9,
+        "median": 97.9,
+        "std": 38.6,
+        "valid_observations": 30
+      },
+      "left_knee_angle": {
+        "min_recommended": 6.5,
+        "max_recommended": 178.5,
+        "median": 138.2,
+        "std": 82.9,
+        "valid_observations": 19
+      },
+      "right_knee_angle": {
+        "min_recommended": 125.4,
+        "max_recommended": 178.9,
+        "median": 177.3,
+        "std": 42.5,
+        "valid_observations": 9
+      },
+      "left_ankle_angle": {
+        "min_recommended": 80.0,
+        "max_recommended": 167.2,
+        "median": 154.4,
+        "std": 46.1,
+        "valid_observations": 16
+      },
+      "right_ankle_angle": {
+        "min_recommended": 67.2,
+        "max_recommended": 163.9,
+        "median": 157.8,
+        "std": 46.4,
+        "valid_observations": 9
+      }
+    }
+  },
+  "Viparita Karani": {
+    "status": "provisional",
+    "source": "Zenodo training partition Right samples",
+    "sample_count": 294,
+    "joint_ranges": {
+      "left_elbow_angle": {
+        "min_recommended": 117.7,
+        "max_recommended": 175.3,
+        "median": 160.6,
+        "std": 33.6,
+        "valid_observations": 169
+      },
+      "right_elbow_angle": {
+        "min_recommended": 120.0,
+        "max_recommended": 175.2,
+        "median": 161.1,
+        "std": 31.9,
+        "valid_observations": 146
+      },
+      "left_shoulder_angle": {
+        "min_recommended": 7.9,
+        "max_recommended": 78.9,
+        "median": 28.5,
+        "std": 27.9,
+        "valid_observations": 183
+      },
+      "right_shoulder_angle": {
+        "min_recommended": 8.0,
+        "max_recommended": 79.3,
+        "median": 32.1,
+        "std": 29.7,
+        "valid_observations": 156
+      },
+      "left_hip_angle": {
+        "min_recommended": 28.1,
+        "max_recommended": 178.7,
+        "median": 171.5,
+        "std": 53.2,
+        "valid_observations": 286
+      },
+      "right_hip_angle": {
+        "min_recommended": 28.7,
+        "max_recommended": 179.1,
+        "median": 169.9,
+        "std": 52.6,
+        "valid_observations": 280
+      },
+      "left_knee_angle": {
+        "min_recommended": 158.1,
+        "max_recommended": 179.5,
+        "median": 175.9,
+        "std": 13.1,
+        "valid_observations": 282
+      },
+      "right_knee_angle": {
+        "min_recommended": 164.6,
+        "max_recommended": 179.4,
+        "median": 176.0,
+        "std": 14.1,
+        "valid_observations": 274
+      },
+      "left_ankle_angle": {
+        "min_recommended": 128.1,
+        "max_recommended": 172.4,
+        "median": 159.0,
+        "std": 17.9,
+        "valid_observations": 282
+      },
+      "right_ankle_angle": {
+        "min_recommended": 127.1,
+        "max_recommended": 170.9,
+        "median": 159.0,
+        "std": 17.7,
+        "valid_observations": 273
+      }
+    }
+  }
+}

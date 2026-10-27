@@ -1,0 +1,88 @@
+{
+  "generated": "2026-10-27 11:10:21",
+  "task_file": "pose_landmarker_heavy (1).task",
+  "visibility_threshold": 0.3,
+  "note": "No annotated keypoints: metrics describe stability/coverage, not landmark accuracy.",
+  "sources": {
+    "vtest.avi": {
+      "kind": "real_video_proxy",
+      "fps": 10.0,
+      "image": {
+        "frames": 300,
+        "detection_rate": 0.02,
+        "latency_mean_ms": 17.4,
+        "latency_p95_ms": 30.34,
+        "missing_body_landmark_rate": 0.375,
+        "temporal_jitter_norm": 0.5913
+      },
+      "video": {
+        "frames": 300,
+        "detection_rate": 0.4633,
+        "latency_mean_ms": 39.14,
+        "latency_p95_ms": 81.41,
+        "missing_body_landmark_rate": 0.0454,
+        "temporal_jitter_norm": 0.16832
+      }
+    },
+    "pose.jpg": {
+      "kind": "synthetic_perturbation_of_real_still",
+      "fps": 30.0,
+      "occluded_frames": [
+        60,
+        75
+      ],
+      "image": {
+        "frames": 120,
+        "detection_rate": 1.0,
+        "latency_mean_ms": 80.98,
+        "latency_p95_ms": 101.54,
+        "missing_body_landmark_rate": 0.0625,
+        "temporal_jitter_norm": 0.02152,
+        "consistency_err_norm_unoccluded": 0.00959,
+        "occluded_frames_detected": 15,
+        "occluded_frames_leg_missing_rate": 1.0
+      },
+      "video": {
+        "frames": 120,
+        "detection_rate": 1.0,
+        "latency_mean_ms": 68.8,
+        "latency_p95_ms": 85.41,
+        "missing_body_landmark_rate": 0.0214,
+        "temporal_jitter_norm": 0.01256,
+        "consistency_err_norm_unoccluded": 0.01432,
+        "occluded_frames_detected": 15,
+        "occluded_frames_leg_missing_rate": 0.25
+      }
+    },
+    "business-person.png": {
+      "kind": "synthetic_perturbation_of_real_still",
+      "fps": 30.0,
+      "occluded_frames": [
+        60,
+        75
+      ],
+      "image": {
+        "frames": 120,
+        "detection_rate": 1.0,
+        "latency_mean_ms": 83.79,
+        "latency_p95_ms": 102.41,
+        "missing_body_landmark_rate": 0.5188,
+        "temporal_jitter_norm": 0.03238,
+        "consistency_err_norm_unoccluded": 0.01859,
+        "occluded_frames_detected": 15,
+        "occluded_frames_leg_missing_rate": 1.0
+      },
+      "video": {
+        "frames": 120,
+        "detection_rate": 1.0,
+        "latency_mean_ms": 68.58,
+        "latency_p95_ms": 85.38,
+        "missing_body_landmark_rate": 0.5036,
+        "temporal_jitter_norm": 0.01157,
+        "consistency_err_norm_unoccluded": 0.03734,
+        "occluded_frames_detected": 15,
+        "occluded_frames_leg_missing_rate": 1.0
+      }
+    }
+  }
+}

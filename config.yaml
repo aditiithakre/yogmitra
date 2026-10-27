@@ -1,0 +1,158 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# config.yaml  –  Yoga Posture Correction System
+#
+# Edit freely; application reads this file at startup.
+# All paths are relative to the project root unless marked absolute.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Saved model artifacts ─────────────────────────────────────────────────────
+model:
+  profile: zenodo               # "zenodo" (10-class dual-task) or "kaggle" (47-class)
+  dir: saved_yoga_model_zenodo
+  mediapipe_task: "pose_landmarker_heavy (1).task"
+
+  # which classifier to use for inference: "rf" (Random Forest) or "mlp" (Neural Network)
+  active_classifier: rf
+
+  # Kaggle 47-class artifacts (used when profile: kaggle)
+  kaggle_dir: saved_yoga_model
+
+# ── MediaPipe tracking ────────────────────────────────────────────────────────
+mediapipe:
+  running_mode: video           # "video" (detect_for_video + timestamps, recommended for webcam) or "image"
+  min_pose_detection_confidence: 0.5
+  min_pose_presence_confidence: 0.5
+  min_tracking_confidence: 0.5
+
+# ── Missing-landmark history (src/pose/missing_landmarks.py) ─────────────────
+landmark_history:
+  max_age_ms: 300               # how long a last-observed joint may stand in for an occluded one
+  scene_change_norm: 0.25       # torso jump (normalised units) that resets history
+  decay_drop: 0.15              # visibility drop over 3 frames that marks a joint "suspect" (0 = off)
+
+# ── Practice / Guided Mode ────────────────────────────────────────────────────
+practice:
+  enabled: false                # pure auto-detect mode by default: matches poses from live video frames!
+  target_pose: "Tadasana"       # optional reference fallback
+
+# ── Biomechanical Anthropometric Calibration ──────────────────────────────────
+calibration:
+  auto_on_startup: true      # Prompt and run 5-second calibration on startup if uncalibrated
+  duration_seconds: 5.0      # Duration of standing baseline capture
+
+# ── Inference settings ────────────────────────────────────────────────────────
+inference:
+  # seconds between full pose-inference runs (0.3 / 0.5 / 1 / 2)
+  interval_seconds: 0.5         # 0.5s for fast, responsive multi-step transitions
+
+  # frames to accumulate for smoothing
+  smoothing_window: 2
+
+  # minimum probability to treat an auto-detected pose as detected.
+  # Overridden by the validation-calibrated value (0.50 for RF and MLP) when
+  # calibration_file is present – 0.28 issued a wrong label on ~20% of held-out frames.
+  confidence_threshold: 0.28
+
+  # MediaPipe landmark visibility threshold
+  visibility_threshold: 0.30
+
+  # Confidence needed before a local label may drive a "high" tier assessment
+  high_confidence: 0.60
+
+  # Do not assess a label that contradicts reliably observed body orientation
+  # (e.g. an upright body labelled as a floor asana). Measured cost on held-out
+  # test: blocks 1.5% (RF) / 1.9% (MLP) of correct labels.
+  orientation_veto: true
+
+  # Auto-detect: a new label must repeat on this many consecutive inferences before assessment
+  min_label_streak: 2
+
+  # Validation-calibrated thresholds per classifier (written by scripts/evaluate_runtime_pipeline.py).
+  # When present, confidence_threshold above is replaced by the calibrated value.
+  calibration_file: data/zenodo/confidence_calibration.json
+  use_calibration_file: true
+
+  # Classifier input for occluded joints: carry the last observation forward (within
+  # landmark_history.max_age_ms).  Zenodo models were trained with all imputed flags = 0,
+  # so flags are zeroed for that profile ("auto"); Kaggle models were trained with flags.
+  classifier_imputed_flags: auto   # auto | keep | zero
+
+  # Geometric candidate filters (gravitational prior + sequence pruning).
+  # mode "legacy" = original hard suppression (measured to lower held-out accuracy, see
+  # EVALUATION.md); "safe" = reliability-gated soft filtering.
+  filters:
+    mode: safe
+    granularity: coarse          # coarse (upright vs floor) | family
+    use_gravity_prior: true
+    use_sequence_pruning: true
+    soft_floor: 0.5
+    stable_frames: 3
+    min_landmark_visibility: 0.5
+    override_confidence: 0.6
+
+  # Per-classifier overrides, chosen on the validation split by scripts/calibrate_confidence.py
+  # (RF: legacy filters cut held-out accuracy 0.77 → 0.53, "safe/coarse" is neutral;
+  #  MLP: the gravitational prior alone improved val and test macro-F1, sequence pruning did not).
+  filters_by_classifier:
+    mlp:
+      mode: legacy
+      use_gravity_prior: true
+      use_sequence_pruning: false
+
+# ── Camera ────────────────────────────────────────────────────────────────────
+camera:
+  device_index: 0
+  width: 1280
+  height: 720
+  mirror: true          # flip horizontally so it feels like a mirror
+
+# ── Overlay / visual feedback ─────────────────────────────────────────────────
+display:
+  show_landmarks: true
+  show_skeleton: true
+  show_angles: true
+  show_confidence: true
+  font_scale: 0.65
+  max_feedback_lines: 4   # max correction lines shown at once
+  show_decision_status: true   # local / Jev / agreement / landmark tier / correction status strip
+  diagnostics: false           # live diagnostic panel (toggle with D)
+
+# ── Voice feedback ────────────────────────────────────────────────────────────
+voice:
+  enabled: true
+  rate: 155              # words per minute (pyttsx3)
+  volume: 0.9
+  # seconds to wait before repeating the same feedback message
+  cooldown_seconds: 12
+
+# ── Jev image assessment (optional, experimental) ────────────────────────────
+# Sends selected still frames to an external service (TypeSafe's Jev API) for a
+# second opinion on which asana is visible.  Disabled by default.  The API key (from
+# console.typesafe.ai) is read ONLY from the environment variable JEVMODEL_API_KEY –
+# never put it in this file.
+# Images are not saved to disk.  The local pipeline works fully without Jev.
+jev:
+  enabled: false
+  endpoint: https://api.typesafe.ai/v1/systemone
+  model: jev-preview              # jev-latest and jev-preview both accept images
+  timeout_seconds: 8.0
+  max_retries: 1                  # bounded retries for 429 / 5xx / timeouts
+  min_request_interval_seconds: 6.0
+  periodic_interval_seconds: 1.0  # >0: send one frame every N s automatically (0 = only on ambiguity / J)
+  primary: true                   # Jev decides the pose and gives the corrections (local model shown for comparison)
+  coach_checkpoints: 4            # per-pose body-part questions per request (see src/models/jev_coach.py)
+  coach_min_confidence: 0.60      # Jev checkpoint answers below this are not turned into instructions
+  high_confidence: 0.85           # Jev pose confidence at or above this is shown as HIGH certainty
+  jpeg_quality: 80
+  max_image_side: 1024            # Jev accepts 280–1568 px per side
+  min_confidence: 0.70            # Jev answers below this are ignored
+  max_result_age_seconds: 4.0     # older answers are discarded as stale
+  max_pose_change: 0.08           # discard answer if body moved this much (normalised) since capture
+  auto_on_ambiguity: true         # request when the local model stays uncertain
+  ambiguity_inferences: 3         # ... for this many consecutive inference runs
+  ambiguity_margin: 0.10          # top-1 vs top-2 probability margin counted as ambiguous
+  manual_key: true                # press J to request an assessment of the current frame
+  request_form_assessment: false  # also ask for an overall visible-form opinion (informational only)
+  show_diagnostics: true
+  image_headers:                  # required by TypeSafe on every request that contains an image
+    TypeSafe-Danger-Zone-Images: "true"

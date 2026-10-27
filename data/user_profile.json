@@ -1,0 +1,15 @@
+{
+  "version": "2.0",
+  "calibrated": true,
+  "user_name": "Calibrated Yogi",
+  "tolerance_multiplier": 1.15,
+  "arm_span_ratio": 1.366,
+  "leg_to_torso_ratio": 1.387,
+  "thigh_to_torso_ratio": 0.836,
+  "shoulder_width_ratio": 0.893,
+  "baseline_torso_px": 193.1,
+  "measurement_stability": 0.7,
+  "calibration_date": "2026-10-27 07:03:14",
+  "pose_baselines": {},
+  "flexibility_tier": "flexible"
+}

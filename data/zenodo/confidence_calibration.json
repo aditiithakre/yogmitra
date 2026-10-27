@@ -1,0 +1,257 @@
+{
+  "generated": "2026-10-27 11:35:00",
+  "selection_split": "val",
+  "report_split": "test",
+  "target_selective_accuracy": 0.8,
+  "min_coverage": 0.5,
+  "rf": {
+    "artifact_dir": "saved_yoga_model_zenodo/rf",
+    "filter_policy_name": "safe_coarse",
+    "filter_policy": {
+      "use_gravity_prior": true,
+      "use_sequence_pruning": true,
+      "mode": "safe",
+      "prior_suppression": 0.005,
+      "sequence_suppression": 0.001,
+      "soft_floor": 0.5,
+      "min_landmark_visibility": 0.5,
+      "stable_frames": 3,
+      "override_confidence": 0.6,
+      "granularity": "coarse"
+    },
+    "val_stream_macro_f1_by_policy": {
+      "no_filters": 0.6341,
+      "prior_only_legacy": 0.5672,
+      "combined_legacy": 0.4127,
+      "safe_coarse": 0.6349,
+      "safe_family_prior_only": 0.6312
+    },
+    "threshold": 0.5,
+    "class_min_precision": 0.5,
+    "per_class_precision": {
+      "Anantasana": 1.0,
+      "Ardhakati Chakrasana": 1.0,
+      "Bhujangasana": 1.0,
+      "Kati Chakrasana": 0.788,
+      "Marjariasana": 0.991,
+      "Parvatasana": 0.96,
+      "Sarvangasana": 0.0,
+      "Tadasana": 0.98,
+      "Vajrasana": 0.0,
+      "Viparita Karani": 0.0
+    },
+    "untrusted_classes": [
+      "Sarvangasana",
+      "Vajrasana",
+      "Viparita Karani"
+    ],
+    "val_threshold_table": [
+      {
+        "threshold": 0.25,
+        "coverage": 0.9904,
+        "selective_accuracy": 0.7456
+      },
+      {
+        "threshold": 0.3,
+        "coverage": 0.9608,
+        "selective_accuracy": 0.7592
+      },
+      {
+        "threshold": 0.35,
+        "coverage": 0.9171,
+        "selective_accuracy": 0.7687
+      },
+      {
+        "threshold": 0.4,
+        "coverage": 0.8541,
+        "selective_accuracy": 0.7818
+      },
+      {
+        "threshold": 0.45,
+        "coverage": 0.7751,
+        "selective_accuracy": 0.7985
+      },
+      {
+        "threshold": 0.5,
+        "coverage": 0.7076,
+        "selective_accuracy": 0.812
+      },
+      {
+        "threshold": 0.55,
+        "coverage": 0.651,
+        "selective_accuracy": 0.8095
+      },
+      {
+        "threshold": 0.6,
+        "coverage": 0.5938,
+        "selective_accuracy": 0.8128
+      },
+      {
+        "threshold": 0.65,
+        "coverage": 0.5315,
+        "selective_accuracy": 0.8089
+      },
+      {
+        "threshold": 0.7,
+        "coverage": 0.4672,
+        "selective_accuracy": 0.7964
+      },
+      {
+        "threshold": 0.75,
+        "coverage": 0.4107,
+        "selective_accuracy": 0.7856
+      },
+      {
+        "threshold": 0.8,
+        "coverage": 0.3368,
+        "selective_accuracy": 0.7595
+      },
+      {
+        "threshold": 0.85,
+        "coverage": 0.2429,
+        "selective_accuracy": 0.7593
+      }
+    ],
+    "test": {
+      "coverage_at_threshold": 0.8209,
+      "selective_accuracy_at_threshold": 0.8362,
+      "coverage_with_class_gate": 0.7094,
+      "selective_accuracy_with_class_gate": 0.9533,
+      "stream_accuracy": 0.7718,
+      "stream_macro_f1": 0.6285,
+      "orientation_veto": {
+        "correct_labels_vetoed_rate": 0.0151,
+        "wrong_labels_vetoed_rate": 0.0,
+        "orientation_evidence_available_rate": 0.3442
+      },
+      "coverage_with_class_gate_and_veto": 0.6992,
+      "selective_accuracy_with_class_gate_and_veto": 0.9526,
+      "wrong_label_rate_before": 0.2077
+    }
+  },
+  "mlp": {
+    "artifact_dir": "saved_yoga_model_zenodo/mlp",
+    "filter_policy_name": "prior_only_legacy",
+    "filter_policy": {
+      "use_gravity_prior": true,
+      "use_sequence_pruning": false,
+      "mode": "legacy",
+      "prior_suppression": 0.005,
+      "sequence_suppression": 0.001,
+      "soft_floor": 0.15,
+      "min_landmark_visibility": 0.5,
+      "stable_frames": 2,
+      "override_confidence": 0.6,
+      "granularity": "coarse"
+    },
+    "val_stream_macro_f1_by_policy": {
+      "no_filters": 0.5943,
+      "prior_only_legacy": 0.6406,
+      "combined_legacy": 0.5591,
+      "safe_coarse": 0.5939,
+      "safe_family_prior_only": 0.5999
+    },
+    "threshold": 0.5,
+    "class_min_precision": 0.5,
+    "per_class_precision": {
+      "Anantasana": 0.803,
+      "Ardhakati Chakrasana": 0.73,
+      "Bhujangasana": 0.951,
+      "Kati Chakrasana": 0.53,
+      "Marjariasana": 0.957,
+      "Parvatasana": 0.937,
+      "Sarvangasana": 0.188,
+      "Tadasana": 0.978,
+      "Vajrasana": 0.0,
+      "Viparita Karani": 0.0
+    },
+    "untrusted_classes": [
+      "Sarvangasana",
+      "Vajrasana",
+      "Viparita Karani"
+    ],
+    "val_threshold_table": [
+      {
+        "threshold": 0.25,
+        "coverage": 1.0,
+        "selective_accuracy": 0.7757
+      },
+      {
+        "threshold": 0.3,
+        "coverage": 0.9987,
+        "selective_accuracy": 0.7767
+      },
+      {
+        "threshold": 0.35,
+        "coverage": 0.991,
+        "selective_accuracy": 0.7802
+      },
+      {
+        "threshold": 0.4,
+        "coverage": 0.9794,
+        "selective_accuracy": 0.7828
+      },
+      {
+        "threshold": 0.45,
+        "coverage": 0.9698,
+        "selective_accuracy": 0.7879
+      },
+      {
+        "threshold": 0.5,
+        "coverage": 0.937,
+        "selective_accuracy": 0.8059
+      },
+      {
+        "threshold": 0.55,
+        "coverage": 0.8895,
+        "selective_accuracy": 0.8237
+      },
+      {
+        "threshold": 0.6,
+        "coverage": 0.8522,
+        "selective_accuracy": 0.8371
+      },
+      {
+        "threshold": 0.65,
+        "coverage": 0.8021,
+        "selective_accuracy": 0.859
+      },
+      {
+        "threshold": 0.7,
+        "coverage": 0.7674,
+        "selective_accuracy": 0.8744
+      },
+      {
+        "threshold": 0.75,
+        "coverage": 0.7281,
+        "selective_accuracy": 0.895
+      },
+      {
+        "threshold": 0.8,
+        "coverage": 0.6877,
+        "selective_accuracy": 0.914
+      },
+      {
+        "threshold": 0.85,
+        "coverage": 0.6401,
+        "selective_accuracy": 0.9237
+      }
+    ],
+    "test": {
+      "coverage_at_threshold": 0.9452,
+      "selective_accuracy_at_threshold": 0.8402,
+      "coverage_with_class_gate": 0.8751,
+      "selective_accuracy_with_class_gate": 0.8806,
+      "stream_accuracy": 0.8043,
+      "stream_macro_f1": 0.6557,
+      "orientation_veto": {
+        "correct_labels_vetoed_rate": 0.019,
+        "wrong_labels_vetoed_rate": 0.0122,
+        "orientation_evidence_available_rate": 0.3856
+      },
+      "coverage_with_class_gate_and_veto": 0.8591,
+      "selective_accuracy_with_class_gate_and_veto": 0.8798,
+      "wrong_label_rate_before": 0.1938
+    }
+  }
+}
